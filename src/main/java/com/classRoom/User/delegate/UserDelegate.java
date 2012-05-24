@@ -8,8 +8,8 @@ import java.util.List;
 
 /**
  * @author : Suraj Muraleedharan
- * Date: Nov 27, 2010
- * Time: 12:28:55 PM
+ *         Date: Nov 27, 2010
+ *         Time: 12:28:55 PM
  */
 @SuppressWarnings("unused")
 public class UserDelegate {
@@ -89,5 +89,16 @@ public class UserDelegate {
      */
     public void deleteUser(Long id) throws UserException {
         userService.deleteUser(id);
+    }
+
+    /**
+     * search for a list of users
+     *
+     * @param searchUser UserVO
+     * @return List of User
+     * @throws UserException on error
+     */
+    public List<UserVO> searchUser(UserVO searchUser) throws UserException {
+        return userService.searchUserDetails(searchUser);
     }
 }

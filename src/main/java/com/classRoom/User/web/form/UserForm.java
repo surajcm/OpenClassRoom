@@ -20,7 +20,7 @@ public class UserForm {
     private Collection<UserVO> userVOs;
     private String loggedInUser;
     private String loggedInRole;
-
+    private UserVO searchUser;
 
     public Long getId() {
         return id;
@@ -101,6 +101,14 @@ public class UserForm {
 
     public void setLoggedInRole(String loggedInRole) {
         this.loggedInRole = loggedInRole;
+    }
+
+    public UserVO getSearchUser() {
+        return searchUser;
+    }
+
+    public void setSearchUser(UserVO searchUser) {
+        this.searchUser = searchUser;
     }
 
     @Override

@@ -6,17 +6,26 @@ import com.classRoom.User.exception.UserException;
 import com.classRoom.User.web.form.UserForm;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.validation.BindException;
+import org.springframework.validation.ValidationUtils;
+import org.springframework.validation.Validator;
+import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
  * @author : Suraj Muraleedharan
- * Date: Nov 27, 2010
- * Time: 2:38:15 PM
+ *         Date: Nov 27, 2010
+ *         Time: 2:38:15 PM
  */
 public class UserController extends MultiActionController {
 
@@ -104,12 +113,13 @@ public class UserController extends MultiActionController {
             return new ModelAndView("user/logIn", "userForm", userForm);
         }
         if (realUser != null && realUser.getRole() != null
-                //&& realUser.getRole().equalsIgnoreCase("ADMIN")) {
+            //&& realUser.getRole().equalsIgnoreCase("ADMIN")) {
                 ) {
             userForm.setLoggedInUser(realUser.getName());
             userForm.setLoggedInRole(realUser.getRole());
-            return new ModelAndView("MainPage", "userForm", userForm);
-        }else{
+            log.info("Logged in successfully");
+            return ListAll(request, response, userForm);
+        } else {
             userForm.setMessage(" An Unknown Error has been occurred !!");
             return new ModelAndView("user/logIn", "userForm", userForm);
         }
@@ -125,7 +135,7 @@ public class UserController extends MultiActionController {
      */
     @SuppressWarnings("unused")
     public ModelAndView ListAll(HttpServletRequest request,
-                                HttpServletResponse response,UserForm userForm) {
+                                HttpServletResponse response, UserForm userForm) {
         log.info(" Inside ListAll method of User Controller ");
         List<UserVO> userList = null;
         try {
@@ -152,6 +162,7 @@ public class UserController extends MultiActionController {
         userForm.setUserVOs(userList);
         userForm.setLoggedInUser(userForm.getLoggedInUser());
         userForm.setLoggedInRole(userForm.getLoggedInRole());
+        userForm.setSearchUser(new UserVO());
         return new ModelAndView("user/UserList", "userForm", userForm);
     }
 
@@ -165,7 +176,7 @@ public class UserController extends MultiActionController {
      */
     @SuppressWarnings("unused")
     public ModelAndView AddUser(HttpServletRequest request,
-                                HttpServletResponse response,UserForm userForm) {
+                                HttpServletResponse response, UserForm userForm) {
         log.info(" Inside AddUser method of User Controller ");
         userForm.setLoggedInUser(userForm.getLoggedInUser());
         userForm.setLoggedInRole(userForm.getLoggedInRole());
@@ -186,6 +197,10 @@ public class UserController extends MultiActionController {
         log.info(" Inside AddUser method of User Controller ");
         log.info(" User instance to add to database " + userForm.toString());
         try {
+            userForm.getUser().setCreatedDate(new Date());
+            userForm.getUser().setModifiedDate(new Date());
+            userForm.getUser().setCreatedBy(userForm.getLoggedInUser());
+            userForm.getUser().setLastModifiedBy(userForm.getLoggedInUser());
             getUserDelegate().addNewUser(userForm.getCurrentUser());
         } catch (UserException e) {
             e.printStackTrace();
@@ -201,7 +216,7 @@ public class UserController extends MultiActionController {
             log.info(" An Unknown Error has been occurred !!");
 
         }
-        return ListAll(request, response,userForm);
+        return ListAll(request, response, userForm);
     }
 
     /**
@@ -256,9 +271,11 @@ public class UserController extends MultiActionController {
     public ModelAndView UpdateUser(HttpServletRequest request,
                                    HttpServletResponse response, UserForm userForm) {
         log.info(" Inside UpdateUser method of User Controller ");
-        log.info(" User instance to update " + userForm.getUser().toString());
         try {
+            userForm.getUser().setLastModifiedBy(userForm.getLoggedInUser());
+            userForm.getUser().setModifiedDate(new Date());
             getUserDelegate().UpdateUser(userForm.getUser());
+            log.info(" User instance to update " + userForm.getUser().toString());
         } catch (UserException e) {
             e.printStackTrace();
             log.error(" Exception type in controller " + e.ExceptionType);
@@ -273,7 +290,7 @@ public class UserController extends MultiActionController {
             log.info(" An Unknown Error has been occurred !!");
 
         }
-        return ListAll(request, response,userForm);
+        return ListAll(request, response, userForm);
     }
 
     /**
@@ -306,7 +323,7 @@ public class UserController extends MultiActionController {
 
         }
 
-        return ListAll(request, response,userForm);
+        return ListAll(request, response, userForm);
     }
 
     /**
@@ -319,7 +336,7 @@ public class UserController extends MultiActionController {
      */
     @SuppressWarnings("unused")
     public ModelAndView ToHome(HttpServletRequest request,
-                                HttpServletResponse response,UserForm userForm) {
+                               HttpServletResponse response, UserForm userForm) {
         log.info(" Inside ToHome method of User Controller ");
         userForm.setLoggedInUser(userForm.getLoggedInUser());
         userForm.setLoggedInRole(userForm.getLoggedInRole());
@@ -336,10 +353,79 @@ public class UserController extends MultiActionController {
      */
     @SuppressWarnings("unused")
     public ModelAndView LogMeOut(HttpServletRequest request,
-                                HttpServletResponse response,UserForm userForm) {
+                                 HttpServletResponse response,
+                                 UserForm userForm) {
         log.info(" Inside LogMeOut method of User Controller ");
 
         return new ModelAndView("user/logIn", "userForm", new UserForm());
+    }
+
+    /**
+     * Screen to search for a user
+     *
+     * @param request  HttpServletRequest instance
+     * @param response HttpServletResponse instance
+     * @param userForm userForm instance
+     * @return ModelAndView to render
+     */
+    @SuppressWarnings("unused")
+    public ModelAndView SearchUser(HttpServletRequest request,
+                                   HttpServletResponse response,
+                                   UserForm userForm) {
+        log.info(" Inside SearchUser method of User Controller ");
+        log.info(" User Details are " + userForm.getSearchUser().toString());
+        List<UserVO> userList = null;
+        try {
+            userList = getUserDelegate().searchUser(userForm.getSearchUser());
+        } catch (UserException e) {
+            e.printStackTrace();
+            log.error(" Exception type in controller " + e.ExceptionType);
+            if (e.getExceptionType().equalsIgnoreCase(UserException.DATABASE_ERROR)) {
+                log.info(" An error occurred while fetching data from database. !! ");
+            } else {
+                log.info(" An Unknown Error has been occurred !!");
+            }
+
+        } catch (Exception e1) {
+            e1.printStackTrace();
+            log.info(" An Unknown Error has been occurred !!");
+
+        }
+        if (userList != null) {
+            for (UserVO userIteration : userList) {
+                log.info(" User detail " + userIteration.toString());
+            }
+        }
+        userForm.setUserVOs(userList);
+        return new ModelAndView("user/UserList", "userForm", userForm);
+    }
+
+    /**
+     * This is for avoiding errors when entering date fields
+     *
+     * @param webDataBinder webDataBinder
+     *//*
+    @InitBinder
+    public void initBinder(WebDataBinder webDataBinder) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat.setLenient(false);
+        webDataBinder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
+    }*/
+
+    protected BindException bindObject(HttpServletRequest request,
+                                       Object command, String commandName, Validator validator) throws Exception {
+        logger.debug("****Entering bindObject method****");
+        ServletRequestDataBinder binder = createBinder(request, command);
+        binder.bind(request);
+        logger.debug("The command name is " + commandName);
+        BindException errors = new BindException(command, commandName);
+//BindException errors = new BindException(binder.getBindingResult());
+        if (validator.supports(command.getClass())) {
+            ValidationUtils.invokeValidator(validator, command, errors);
+        }
+        logger.debug("Errors in binding are " + errors);
+        logger.debug("****Exiting bindObject method****");
+        return errors;
     }
 
 }

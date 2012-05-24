@@ -60,4 +60,13 @@ public interface UserService {
      * @throws UserException on error
      */
     public void deleteUser(Long id) throws UserException;
+
+    /**
+     * search for a list of users
+     *
+     * @param searchUser UserVO
+     * @return List of User
+     * @throws UserException on error
+     */
+    public List<UserVO> searchUserDetails(UserVO searchUser)throws UserException;
 }

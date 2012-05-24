@@ -11,8 +11,8 @@ import java.util.List;
 
 /**
  * @author : Suraj Muraleedharan
- * Date: Nov 27, 2010
- * Time: 2:38:15 PM
+ *         Date: Nov 27, 2010
+ *         Time: 2:38:15 PM
  */
 public class UserServiceImpl implements UserService {
 
@@ -142,6 +142,26 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e1) {
             e1.printStackTrace();
         }
+    }
+
+    /**
+     * search for a list of users
+     *
+     * @param searchUser UserVO
+     * @return List of User
+     * @throws UserException on error
+     */
+    public List<UserVO> searchUserDetails(UserVO searchUser) throws UserException {
+        List<UserVO> userList = null;
+        try {
+            userList = userDAO.searchUserDetails(searchUser);
+        } catch (UserException e) {
+            log.error(" Exception type in service impl " + e.getExceptionType());
+            throw new UserException(e.getExceptionType());
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+        return userList;
     }
 
 }
