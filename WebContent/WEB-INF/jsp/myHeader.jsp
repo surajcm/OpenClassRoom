@@ -60,47 +60,63 @@
 		</script>
 	</head>
     <body>
-        <table id="menuimg" border="1"  width="100%" >
-            <tr >
+        <table id="menuimg" border="0"  width="100%" >
+            <tr>
+				<td colspan="2">
                 <%
-                    String DATE_FORMAT = "dd-MM-yyyy";
+                    String DATE_FORMAT = "dd-MMM-yyyy";
                     String TIME_NOW = "HH:mm";
                     java.util.Calendar cal = java.util.Calendar.getInstance();
                     java.text.SimpleDateFormat fmt = new java.text.SimpleDateFormat(DATE_FORMAT);
                     java.text.SimpleDateFormat fmt_time = new java.text.SimpleDateFormat(TIME_NOW);
                 %>
-                <td>
-						<div style="position:fixed;height:50%;width:50%;left:25%;">
-						<label class="menuFirstLine">Welcome </label>
-						<label class="menuFirstLine"><c:out value="${userForm.loggedInUser}" /></label>|
-						<label class="menuFirstLine"><c:out value="${userForm.loggedInRole}" /></label>|
-						<label class="menuFirstLine"><%=fmt.format(cal.getTime()) %></label>|
-						<label class="menuFirstLine"><%=fmt_time.format(cal.getTime()) %></label>
-						</div>
-						<br/>
-						<c:set var="roleFinder" value="admin" />
-						<c:choose>
-							<c:when test="${userForm.loggedInRole eq roleFinder}">
-								<div class="menu"onclick="javascript:goToHome();" >
-									<label for="Home" style="font-weight: bold;color:white;"  onMouseOver="this.style.cursor='pointer'"  >Home</label>
-								</div>
-								<div class="menu"  onclick="javascript:listMe();" >
-									<label for="User" style="font-weight: bold;color:white;" onMouseOver="this.style.cursor='pointer'" >UserManagement</label>
-								</div>
-								<div class="menu"  onclick="javascript:LogMeOut();" >
-									<label for="Out" style="font-weight: bold;color:white;" onMouseOver="this.style.cursor='pointer'" >LogOut</label>
-								</div>
-							</c:when>
-							<c:otherwise>
-								<div class="menu"  >
-									<label for="NoMenu" style="font-weight: bold;color:white;" >Guest user has no menus available</label>
-									<label for="Out" style="font-weight: bold;color:white;" onMouseOver="this.style.cursor='pointer'"  onclick="javascript:LogMeOut();">LogOut</label>
-								</div>
-
-							</c:otherwise>
-						</c:choose>
-                    </td>
+				</td>
+			</tr>
+			<tr>
+                <td align="middle" colspan="2" >
+					<label class="menuFirstLine">Welcome </label>
+					<label class="menuFirstLine"><c:out value="${userForm.loggedInUser}" /></label>|
+					<label class="menuFirstLine"><%=fmt.format(cal.getTime()) %></label>|
+					<label class="menuFirstLine"><%=fmt_time.format(cal.getTime()) %></label>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<hr/>
+				</td>
+			</tr>	
+			<tr>	
+				<c:set var="roleFinder" value="admin" />
+				<c:choose>
+					<c:when test="${userForm.loggedInRole eq roleFinder}">
+						<td>
+							<label onclick="javascript:goToHome();" for="Home" style="font-weight: bold;color:white;font-size: .70em;"  onMouseOver="this.style.cursor='pointer'"  >Home</label>
+							<label onclick="javascript:listMe();" for="User" style="font-weight: bold;color:white;font-size: .70em;" onMouseOver="this.style.cursor='pointer'" >UserManagement</label>
+						</td>
+						<td align="right" height="0px"  onclick="javascript:LogMeOut();">
+							<label for="help" style="font-weight: bold;color:white;font-size: .70em;" onMouseOver="this.style.cursor='pointer'" >Help</label>
+							&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for="Out" style="font-weight: bold;color:white;font-size: .70em;" onMouseOver="this.style.cursor='pointer'" >LogOut</label>
+						</td>	
+					</c:when>
+					<c:otherwise>
+						<td class="menu">
+							<label for="NoMenu" style="font-weight: bold;color:white;" >Guest user has no menus available</label>
+							
+						</td>
+						<td align="right" height="0px"  onclick="javascript:LogMeOut();">
+							<label for="help" style="font-weight: bold;color:white;font-size: .70em;" onMouseOver="this.style.cursor='pointer'" >Help</label>
+							&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for="Out" style="font-weight: bold;color:white;font-size: .70em;" onMouseOver="this.style.cursor='pointer'" >LogOut</label>
+						</td>
+					</c:otherwise>
+				</c:choose>
             </tr>
+			<tr>
+				<td colspan="2">
+					<hr/>
+				</td>
+			</tr>
         </table>
     </body>
 </html>
