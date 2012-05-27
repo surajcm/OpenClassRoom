@@ -148,7 +148,7 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
         if (searchUser.getName() != null) {
             dynamicQuery.append(" where ");
             isWhereAppended = Boolean.TRUE;
-            dynamicQuery.append(" name like ? ").append(searchUser.getName());
+            dynamicQuery.append(" name like  ").append(searchUser.getName());
             parameterList.add(searchUser.getName());
         } else if (searchUser.getRole() != null) {
             if (!isWhereAppended) {
@@ -156,7 +156,7 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
             } else {
                 dynamicQuery.append(" and ");
             }
-            dynamicQuery.append(" role like ? ").append(searchUser.getRole());
+            dynamicQuery.append(" role like  ").append(searchUser.getRole());
             parameterList.add(searchUser.getRole());
         } else if (searchUser.getCreatedBy() != null) {
             if (!isWhereAppended) {
@@ -164,7 +164,7 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
             } else {
                 dynamicQuery.append(" and ");
             }
-            dynamicQuery.append(" createdBy like ? ").append(searchUser.getCreatedBy());
+            dynamicQuery.append(" createdBy like  ").append(searchUser.getCreatedBy());
             parameterList.add(searchUser.getCreatedBy());
         } else if (searchUser.getCreatedDate() != null) {
             if (!isWhereAppended) {
@@ -172,7 +172,7 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
             } else {
                 dynamicQuery.append(" and ");
             }
-            dynamicQuery.append(" createdOn like ? ").append(searchUser.getCreatedDate());
+            dynamicQuery.append(" createdOn like  ").append(searchUser.getCreatedDate());
             parameterList.add(searchUser.getCreatedDate());
         } else if (searchUser.getLastModifiedBy() != null) {
             if (!isWhereAppended) {
@@ -180,7 +180,7 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
             } else {
                 dynamicQuery.append(" and ");
             }
-            dynamicQuery.append(" modifiedBy like ? ").append(searchUser.getLastModifiedBy());
+            dynamicQuery.append(" modifiedBy like  ").append(searchUser.getLastModifiedBy());
             parameterList.add(searchUser.getLastModifiedBy());
         } else if (searchUser.getModifiedDate() != null) {
             if (!isWhereAppended) {
@@ -188,9 +188,10 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
             } else {
                 dynamicQuery.append(" and ");
             }
-            dynamicQuery.append(" modifiedOn like ? ").append(searchUser.getModifiedDate());
+            dynamicQuery.append(" modifiedOn like  ").append(searchUser.getModifiedDate());
             parameterList.add(searchUser.getModifiedDate());
         }
+        log.info("Query generated is "+ dynamicQuery);
         return (List<UserVO>) getJdbcTemplate().queryForObject(dynamicQuery.toString(), parameterList.toArray(), new UserRowMapper());
     }
 

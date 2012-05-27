@@ -36,7 +36,7 @@
                             <label class="mandatory">*</label>
                         </td>
                         <td>
-                            <form:input path="name" cssClass="textboxes" id="name" />
+                            <form:input path="user.name" cssClass="textboxes" id="name" />
                         </td>
                     </tr>
                     <tr>
@@ -45,7 +45,7 @@
                             <label class="mandatory">*</label>
                         </td>
                         <td>
-                            <form:password path="password" cssClass="textboxes" id="psw" />
+                            <form:password path="user.password" cssClass="textboxes" id="psw" />
                         </td>
                     </tr>
                     <tr>
@@ -54,7 +54,7 @@
                             <label class="mandatory">*</label>
                         </td>
                         <td>
-                            <form:select path="role" cssClass="textboxes" id="role" >
+                            <form:select path="user.role" cssClass="textboxes" id="role" >
                                 <form:option value="admin"><spring:message code="openclassroom.admin" text="admin" /></form:option>
                                 <form:option value="guest"><spring:message code="openclassroom.guest" text="guest" /></form:option>
                             </form:select>

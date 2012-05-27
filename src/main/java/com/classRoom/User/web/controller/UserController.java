@@ -180,6 +180,7 @@ public class UserController extends MultiActionController {
         log.info(" Inside AddUser method of User Controller ");
         userForm.setLoggedInUser(userForm.getLoggedInUser());
         userForm.setLoggedInRole(userForm.getLoggedInRole());
+        userForm.setUser(new UserVO());
         return new ModelAndView("user/userAdd", "userForm", userForm);
     }
 

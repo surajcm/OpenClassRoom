@@ -186,7 +186,7 @@
 							</td>
 							<td>
 								<!--form:input path="searchUser.createdDate" cssClass="textboxes" id="createdDate" /-->
-								<input type="text" value="readonly" >
+								<input type="text" value="not in use" >
                                 <form:errors path="searchUser.createdDate" />
 							</td>
 						</tr>
@@ -221,12 +221,25 @@
 							</td>
 							<td>
 								<!--form:input path="searchUser.modifiedDate" cssClass="textboxes" id="modifiedDate" /-->
-                                <input type="text" value="readonly" >
+                                <input type="text" value="not in use" >
                                 <form:errors path="searchUser.modifiedDate" />
 							</td>
 						</tr>
 						<tr>
 							<td colspan="4">&nbsp;</td>
+						</tr>
+						<tr>
+							<td colspan="8">&nbsp;</td>
+							<td>
+								<label for="includes" style="font-size: .70em;"> Includes
+									<input type="checkbox" name="includes" value="includes" />
+								</label>
+							</td>
+							<td>
+								<label for="startswith" style="font-size: .70em;"> Starts with
+									<input type="checkbox" name="startswith" value="startswith" />
+								</label>
+							</td>	
 						</tr>
 						<tr>
 							<td colspan="8">&nbsp;</td>
