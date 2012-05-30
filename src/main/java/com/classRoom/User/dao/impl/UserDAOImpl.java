@@ -38,7 +38,7 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
     private static final String UPDATE_USER_SQL = " update user set name = ?, pass = ?, role = ?, modifiedOn = ? , modifiedBy = ? where id = ?";
 
     // insert new user
-    private static final String INSERT_USER_SQL = " insert into user(name, pass, role, createdOn, modifiedOn, createdBy, modifiedBy) values (?, ? ,?)";
+    private static final String INSERT_USER_SQL = " insert into user(name, pass, role, createdOn, modifiedOn, createdBy, modifiedBy) values (?, ? ,?, ? , ? ,? , ?)";
 
     // delete user details by id
     private static final String DELETE_BY_ID_SQL = " delete from user where id = ? ";
@@ -191,7 +191,7 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
             dynamicQuery.append(" modifiedOn like  ").append(searchUser.getModifiedDate());
             parameterList.add(searchUser.getModifiedDate());
         }
-        log.info("Query generated is "+ dynamicQuery);
+        log.info("Query generated is " + dynamicQuery);
         return (List<UserVO>) getJdbcTemplate().queryForObject(dynamicQuery.toString(), parameterList.toArray(), new UserRowMapper());
     }
 
@@ -229,9 +229,9 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
                 user.getName(),
                 user.getPassword(),
                 user.getRole(),
-                user.getId(),
                 new Date(),
-                user.getLastModifiedBy()};
+                user.getLastModifiedBy(),
+                user.getId()};
 
         try {
             getJdbcTemplate().update(UPDATE_USER_SQL, parameters);

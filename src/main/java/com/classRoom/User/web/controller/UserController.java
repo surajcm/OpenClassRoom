@@ -195,14 +195,14 @@ public class UserController extends MultiActionController {
     @SuppressWarnings("unused")
     public ModelAndView SaveUser(HttpServletRequest request,
                                  HttpServletResponse response, UserForm userForm) {
-        log.info(" Inside AddUser method of User Controller ");
+        log.info(" Inside SaveUser method of User Controller ");
         log.info(" User instance to add to database " + userForm.toString());
         try {
             userForm.getUser().setCreatedDate(new Date());
             userForm.getUser().setModifiedDate(new Date());
             userForm.getUser().setCreatedBy(userForm.getLoggedInUser());
             userForm.getUser().setLastModifiedBy(userForm.getLoggedInUser());
-            getUserDelegate().addNewUser(userForm.getCurrentUser());
+            getUserDelegate().addNewUser(userForm.getUser());
         } catch (UserException e) {
             e.printStackTrace();
             log.error(" Exception type in controller " + e.ExceptionType);
@@ -275,8 +275,8 @@ public class UserController extends MultiActionController {
         try {
             userForm.getUser().setLastModifiedBy(userForm.getLoggedInUser());
             userForm.getUser().setModifiedDate(new Date());
-            getUserDelegate().UpdateUser(userForm.getUser());
             log.info(" User instance to update " + userForm.getUser().toString());
+            getUserDelegate().UpdateUser(userForm.getUser());
         } catch (UserException e) {
             e.printStackTrace();
             log.error(" Exception type in controller " + e.ExceptionType);
@@ -399,34 +399,6 @@ public class UserController extends MultiActionController {
         }
         userForm.setUserVOs(userList);
         return new ModelAndView("user/UserList", "userForm", userForm);
-    }
-
-    /**
-     * This is for avoiding errors when entering date fields
-     *
-     * @param webDataBinder webDataBinder
-     *//*
-    @InitBinder
-    public void initBinder(WebDataBinder webDataBinder) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        dateFormat.setLenient(false);
-        webDataBinder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
-    }*/
-
-    protected BindException bindObject(HttpServletRequest request,
-                                       Object command, String commandName, Validator validator) throws Exception {
-        logger.debug("****Entering bindObject method****");
-        ServletRequestDataBinder binder = createBinder(request, command);
-        binder.bind(request);
-        logger.debug("The command name is " + commandName);
-        BindException errors = new BindException(command, commandName);
-//BindException errors = new BindException(binder.getBindingResult());
-        if (validator.supports(command.getClass())) {
-            ValidationUtils.invokeValidator(validator, command, errors);
-        }
-        logger.debug("Errors in binding are " + errors);
-        logger.debug("****Exiting bindObject method****");
-        return errors;
     }
 
 }
