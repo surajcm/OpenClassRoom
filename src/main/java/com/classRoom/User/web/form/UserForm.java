@@ -3,6 +3,7 @@ package com.classRoom.User.web.form;
 import com.classRoom.User.domain.UserVO;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author : Suraj Muraleedharan
@@ -13,6 +14,7 @@ import java.util.Collection;
 public class UserForm {
     private Long id;
 	private String name;
+	private String loginId;
 	private String password;
 	private String role;
 	private String message;
@@ -21,6 +23,9 @@ public class UserForm {
     private String loggedInUser;
     private String loggedInRole;
     private UserVO searchUser;
+    private String statusMessage;
+    private String statusMessageType;
+    private List<String> roleList;
 
     public Long getId() {
         return id;
@@ -36,7 +41,16 @@ public class UserForm {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getPassword() {
+
+    public String getLoginId() {
+        return loginId;
+    }
+
+    public void setLoginId(String loginId) {
+        this.loginId = loginId;
+    }
+
+    public String getPassword() {
 		return password;
 	}
 	public void setPassword(String password) {
@@ -70,6 +84,7 @@ public class UserForm {
     public UserVO getCurrentUser() {
         UserVO userVO = new UserVO();
         userVO.setName(getName());
+        userVO.setLoginId(getLoginId());
         userVO.setPassword(getPassword());
         userVO.setRole(getRole());
         return userVO;
@@ -111,20 +126,44 @@ public class UserForm {
         this.searchUser = searchUser;
     }
 
+    public String getStatusMessage() {
+        return statusMessage;
+    }
+
+    public void setStatusMessage(String statusMessage) {
+        this.statusMessage = statusMessage;
+    }
+
+    public String getStatusMessageType() {
+        return statusMessageType;
+    }
+
+    public void setStatusMessageType(String statusMessageType) {
+        this.statusMessageType = statusMessageType;
+    }
+
+    public List<String> getRoleList() {
+        return roleList;
+    }
+
+    public void setRoleList(List<String> roleList) {
+        this.roleList = roleList;
+    }
+
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder();
-        sb.append("UserForm");
-        sb.append("{id=").append(id);
-        sb.append(", name='").append(name).append('\'');
-        sb.append(", password='").append(password).append('\'');
-        sb.append(", role='").append(role).append('\'');
-        sb.append(", message='").append(message).append('\'');
-        sb.append(", user=").append(user);
-        sb.append(", userVOs=").append(userVOs);
-        sb.append(", loggedInUser='").append(loggedInUser).append('\'');
-        sb.append(", loggedInRole='").append(loggedInRole).append('\'');
-        sb.append('}');
-        return sb.toString();
+        return "UserForm{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", loginId='" + loginId + '\'' +
+                ", password='" + password + '\'' +
+                ", role='" + role + '\'' +
+                ", message='" + message + '\'' +
+                ", user=" + user +
+                ", userVOs=" + userVOs +
+                ", loggedInUser='" + loggedInUser + '\'' +
+                ", loggedInRole='" + loggedInRole + '\'' +
+                ", searchUser=" + searchUser +
+                '}';
     }
 }

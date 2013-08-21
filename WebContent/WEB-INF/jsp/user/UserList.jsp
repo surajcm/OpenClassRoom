@@ -1,14 +1,42 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-		<title>User List</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title><spring:message code="openclassroom.userListPage" text="User List" /></title>
 		<link rel="stylesheet" type="text/css" href="../css/mainStyles.css" />
-		<script type="text/javascript">
+        <style type="text/css">
+
+            .info, .success, .error {
+                border: 1px solid;
+                margin: 10px 0px;
+                padding: 15px 10px 15px 50px;
+                background-repeat: no-repeat;
+                background-position: 10px center;
+            }
+
+            .info {
+                color: #00529B;
+                background-color: #BDE5F8;
+                background-image: url( "<%=request.getContextPath()%>/images/Info.png" );
+            }
+
+            .success {
+                color: #4F8A10;
+                background-color: #DFF2BF;
+                background-image: url( '<%=request.getContextPath()%>/images/Success.png' );
+            }
+
+            .error {
+                color: #D8000C;
+                background-color: #FFBABA;
+                background-image: url( '<%=request.getContextPath()%>/images/Error.png' );
+            }
+        </style>
+        <script type="text/javascript">
 
 			//code to add New user
 			function addNew(){
@@ -141,22 +169,22 @@
 				document.forms[0].action="SearchUser.htm";
 				document.forms[0].submit();
 			}
-			
-			function clear(){
+
+			function clearOut(){
 			}
 
 		</script>
 	</head>
 	<body style="background: #A9A9A9 ;" >
         <form:form method="POST" commandName="userForm" name="userForm" action="listAll.htm" >
-        <%@include file="/WEB-INF/jsp/myHeader.jsp" %>
-        <input type="hidden" name="id" id="id" />
-        <form:hidden name="loggedInUser" path="loggedInUser" />
-	    <form:hidden name="loggedInRole" path="loggedInRole" />
+            <input type="hidden" name="id" id="id" />
+            <form:hidden name="loggedInUser" path="loggedInUser" />
+            <form:hidden name="loggedInRole" path="loggedInRole" />
+            <%@include file="/WEB-INF/jsp/myHeader.jsp" %>
         <div id="content">
             <div class="wrap">
                 <fieldset style="text-align:right;">
-					<legend>Search User Details</legend>
+					<legend><spring:message code="user.searchUse" text="Search User Details" /></legend>
 					<table style="margin:auto;top:50%;left:50%;">
 						<tr>
 							<td>
@@ -231,12 +259,14 @@
 						<tr>
 							<td colspan="8">&nbsp;</td>
 							<td>
-								<label for="includes" style="font-size: .70em;"> Includes
+								<label for="includes" style="font-size: .70em;">
+								    <spring:message code="user.includes" text="Includes" />
 									<input type="checkbox" name="includes" value="includes" />
 								</label>
 							</td>
 							<td>
-								<label for="startswith" style="font-size: .70em;"> Starts with
+								<label for="startswith" style="font-size: .70em;">
+								    <spring:message code="user.startsWith" text="Starts with" />
 									<input type="checkbox" name="startswith" value="startswith" />
 								</label>
 							</td>	
@@ -244,18 +274,18 @@
 						<tr>
 							<td colspan="8">&nbsp;</td>
 							<td>
-								<input class="btn" value="Search" type="button" onclick="javascript:search()" />
+								<input class="btn" value="<spring:message code="openclassroom.search" text="Search" />" type="button" onclick="javascript:search()" />
 							</td>
 							<td>
-								<input class="btn" value="Clear" type="button" onclick="javascript:clear()" />
+								<input class="btn" value="<spring:message code="openclassroom.clear" text="Clear" />" type="button" onclick="javascript:clear()" />
 							</td>	
 						</tr>	
 					</table>
 				</fieldset>
 				<br/>
 				<fieldset>
-					<legend>User Details</legend>
-					<table border="2" id="myTable">
+					<legend><spring:message code="user.UserDetail" text="User Details" /></legend>
+					<table border="2" id="myTable" style="font-size: .60em;">
 						<thead>
 							<tr>
 								<th><spring:message code="openclassroom.id" text="id" /></th>
@@ -287,9 +317,9 @@
 							<td>
 								<br/>
 								<br/>
-								<input class="btn" value="Add New User" type="button" onclick="javascript:addNew()" />
-								<input class="btn" value="Edit User" type="button" onclick="javascript:editMe()" />
-								<input class="btn" value="Delete User" type="button" onclick="javascript:deleteUser()" />
+								<input class="btn" value="<spring:message code="openclassroom.add" text="Modified By" />" type="button" onclick="javascript:addNew()" />
+								<input class="btn" value="<spring:message code="openclassroom.edit" text="Edit User" />" type="button" onclick="javascript:editMe()" />
+								<input class="btn" value="<spring:message code="openclassroom.delete" text="Delete User" />" type="button" onclick="javascript:deleteUser()" />
 							</td>
 						</tr>
 					</table>

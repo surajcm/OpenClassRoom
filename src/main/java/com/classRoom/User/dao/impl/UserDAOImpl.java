@@ -7,11 +7,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,24 +23,24 @@ import java.util.List;
  *         Time: 12:43:13 PM
  */
 public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
+    private SimpleJdbcInsert insertUser;
 
     //logger
     private final Log log = LogFactory.getLog(UserDAOImpl.class);
 
     //select all from table
-    private static final String GET_ALL_USERS_SQL = " select * from user ";
+    private static final String GET_ALL_USERS_SQL = " select * from user order by modifiedOn";
+
+    private static final String SEARCH_USERS_SQL = " select * from user ";
 
     // select single user information from database
     private static final String GET_SINGLE_USER_SQL = " select * from user where id = ? ";
 
     // get user details by name
-    private static final String GET_USER_BY_NAME_SQL = " select * from user where name = ? ";
+    private static final String GET_USER_BY_NAME_SQL = " select * from user where LogId = ? ";
 
     // update user details
-    private static final String UPDATE_USER_SQL = " update user set name = ?, pass = ?, role = ?, modifiedOn = ? , modifiedBy = ? where id = ?";
-
-    // insert new user
-    private static final String INSERT_USER_SQL = " insert into user(name, pass, role, createdOn, modifiedOn, createdBy, modifiedBy) values (?, ? ,?, ? , ? ,? , ?)";
+    private static final String UPDATE_USER_SQL = " update user set name = ?, LogId = ? ,Pass = ?, Role = ?, modifiedOn = ? , modifiedBy = ? where id = ?";
 
     // delete user details by id
     private static final String DELETE_BY_ID_SQL = " delete from user where id = ? ";
@@ -55,6 +57,7 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
         try {
             currentUser = getUserByName(user.getName());
         } catch (DataAccessException e) {
+            e.printStackTrace();
             throw new UserException(UserException.DATABASE_ERROR);
         }
 
@@ -142,57 +145,52 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
      */
     @SuppressWarnings("unchecked")
     public List<UserVO> searchAllUsers(UserVO searchUser) throws DataAccessException {
-        StringBuilder dynamicQuery = new StringBuilder(GET_ALL_USERS_SQL);
-        List<Object> parameterList = new ArrayList<Object>();
+        StringBuilder dynamicQuery = new StringBuilder(SEARCH_USERS_SQL);
         Boolean isWhereAppended = Boolean.FALSE;
-        if (searchUser.getName() != null) {
+        if (searchUser.getName() != null && searchUser.getName().trim().length() > 0) {
             dynamicQuery.append(" where ");
             isWhereAppended = Boolean.TRUE;
-            dynamicQuery.append(" name like  ").append(searchUser.getName());
-            parameterList.add(searchUser.getName());
-        } else if (searchUser.getRole() != null) {
+            if (searchUser.getIncludes()) {
+                dynamicQuery.append(" name like '%").append(searchUser.getName()).append("%'");
+            } else if (searchUser.getStartsWith()) {
+                dynamicQuery.append(" name like '").append(searchUser.getName()).append("%'");
+            } else {
+                dynamicQuery.append(" name like '").append(searchUser.getName()).append("'");
+            }
+        }
+
+        if (searchUser.getLoginId() != null && searchUser.getLoginId().trim().length() > 0) {
             if (!isWhereAppended) {
                 dynamicQuery.append(" where ");
             } else {
                 dynamicQuery.append(" and ");
             }
-            dynamicQuery.append(" role like  ").append(searchUser.getRole());
-            parameterList.add(searchUser.getRole());
-        } else if (searchUser.getCreatedBy() != null) {
-            if (!isWhereAppended) {
-                dynamicQuery.append("where");
+            if (searchUser.getIncludes()) {
+                dynamicQuery.append(" LogId like '%").append(searchUser.getLoginId()).append("%'");
+            } else if (searchUser.getStartsWith()) {
+                dynamicQuery.append(" LogId like '").append(searchUser.getLoginId()).append("%'");
             } else {
-                dynamicQuery.append(" and ");
+                dynamicQuery.append(" LogId like '").append(searchUser.getLoginId()).append("'");
             }
-            dynamicQuery.append(" createdBy like  ").append(searchUser.getCreatedBy());
-            parameterList.add(searchUser.getCreatedBy());
-        } else if (searchUser.getCreatedDate() != null) {
-            if (!isWhereAppended) {
-                dynamicQuery.append("where");
-            } else {
-                dynamicQuery.append(" and ");
-            }
-            dynamicQuery.append(" createdOn like  ").append(searchUser.getCreatedDate());
-            parameterList.add(searchUser.getCreatedDate());
-        } else if (searchUser.getLastModifiedBy() != null) {
-            if (!isWhereAppended) {
-                dynamicQuery.append("where");
-            } else {
-                dynamicQuery.append(" and ");
-            }
-            dynamicQuery.append(" modifiedBy like  ").append(searchUser.getLastModifiedBy());
-            parameterList.add(searchUser.getLastModifiedBy());
-        } else if (searchUser.getModifiedDate() != null) {
-            if (!isWhereAppended) {
-                dynamicQuery.append("where");
-            } else {
-                dynamicQuery.append(" and ");
-            }
-            dynamicQuery.append(" modifiedOn like  ").append(searchUser.getModifiedDate());
-            parameterList.add(searchUser.getModifiedDate());
         }
+
+        if (searchUser.getRole() != null && searchUser.getRole().trim().length() > 0) {
+            if (!isWhereAppended) {
+                dynamicQuery.append(" where ");
+            } else {
+                dynamicQuery.append(" and ");
+            }
+            if (searchUser.getIncludes()) {
+                dynamicQuery.append(" role like '%").append(searchUser.getRole()).append("%'");
+            } else if (searchUser.getStartsWith()) {
+                dynamicQuery.append(" role like '").append(searchUser.getRole()).append("%'");
+            } else {
+                dynamicQuery.append(" role like '").append(searchUser.getRole()).append("'");
+            }
+        }
+
         log.info("Query generated is " + dynamicQuery);
-        return (List<UserVO>) getJdbcTemplate().queryForObject(dynamicQuery.toString(), parameterList.toArray(), new UserRowMapper());
+        return (List<UserVO>) getJdbcTemplate().query(dynamicQuery.toString(), new UserRowMapper());
     }
 
     /**
@@ -210,13 +208,14 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
     /**
      * getUserById
      *
-     * @param name name
+     * @param loginId loginId
      * @return User
      * @throws DataAccessException on error
      */
     @SuppressWarnings("unchecked")
-    public UserVO getUserByName(String name) throws DataAccessException {
-        return (UserVO) getJdbcTemplate().queryForObject(GET_USER_BY_NAME_SQL, new Object[]{name}, new UserRowMapper());
+    public UserVO getUserByName(String loginId) throws DataAccessException {
+        log.info("login required for login Id "+loginId);
+        return (UserVO) getJdbcTemplate().queryForObject(GET_USER_BY_NAME_SQL, new Object[]{loginId}, new UserRowMapper());
     }
 
     /**
@@ -227,6 +226,7 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
     public void updateUser(UserVO user) throws UserException {
         Object[] parameters = new Object[]{
                 user.getName(),
+                user.getLoginId(),
                 user.getPassword(),
                 user.getRole(),
                 new Date(),
@@ -248,15 +248,19 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
      * @throws DataAccessException on error
      */
     public void saveUser(final UserVO user) throws DataAccessException {
-        Object[] parameters =
-                new Object[]{user.getName(),
-                        user.getPassword(),
-                        user.getRole(),
-                        user.getCreatedDate(),
-                        user.getModifiedDate(),
-                        user.getCreatedBy(),
-                        user.getLastModifiedBy()};
-        getJdbcTemplate().update(INSERT_USER_SQL, parameters);
+        insertUser = new SimpleJdbcInsert(getDataSource()).withTableName("user").usingGeneratedKeyColumns("id");
+        SqlParameterSource parameters = new MapSqlParameterSource()
+                .addValue("name", user.getName())
+                .addValue("LogId", user.getLoginId())
+                .addValue("Pass", user.getPassword())
+                .addValue("role", user.getRole())
+                .addValue("createdOn", user.getCreatedDate())
+                .addValue("modifiedOn", user.getModifiedDate())
+                .addValue("createdBy", user.getCreatedBy())
+                .addValue("modifiedBy", user.getLastModifiedBy());
+        Number newId = insertUser.executeAndReturnKey(parameters);
+        log.info(" the queryForInt resulted in  " + newId.longValue());
+        user.setId(newId.longValue());
 
     }
 
@@ -310,7 +314,8 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
             UserVO user = new UserVO();
             user.setId(resultSet.getLong("id"));
             user.setName(resultSet.getString("name"));
-            user.setPassword(resultSet.getString("pass"));
+            user.setLoginId(resultSet.getString("LogId"));
+            user.setPassword(resultSet.getString("Pass"));
             user.setRole(resultSet.getString("role"));
             user.setCreatedBy(resultSet.getString("createdBy"));
             user.setCreatedDate(resultSet.getDate("createdOn"));

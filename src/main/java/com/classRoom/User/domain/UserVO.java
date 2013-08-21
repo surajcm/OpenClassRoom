@@ -11,12 +11,15 @@ import java.util.Date;
 public class UserVO {
     private Long id;
 	private String name;
+	private String loginId;
 	private String password;
 	private String role;
     private Date createdDate;
     private Date modifiedDate;
     private String createdBy;
     private String lastModifiedBy;
+    private Boolean startsWith;
+    private Boolean includes;
 
     public Long getId() {
         return id;
@@ -79,11 +82,28 @@ public class UserVO {
         this.lastModifiedBy = lastModifiedBy;
     }
 
+    public Boolean getStartsWith() {
+        return startsWith;
+    }
+
+    public void setStartsWith(Boolean startsWith) {
+        this.startsWith = startsWith;
+    }
+
+    public Boolean getIncludes() {
+        return includes;
+    }
+
+    public void setIncludes(Boolean includes) {
+        this.includes = includes;
+    }
+
     @Override
     public String toString() {
         return "UserVO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", loginId='" + loginId + '\'' +
                 ", password='" + password + '\'' +
                 ", role='" + role + '\'' +
                 ", createdDate=" + createdDate +
@@ -91,6 +111,14 @@ public class UserVO {
                 ", createdBy='" + createdBy + '\'' +
                 ", lastModifiedBy='" + lastModifiedBy + '\'' +
                 '}';
+    }
+
+    public String getLoginId() {
+        return loginId;
+    }
+
+    public void setLoginId(String loginId) {
+        this.loginId = loginId;
     }
 }
 
