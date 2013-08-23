@@ -17,7 +17,8 @@
     </bean>
 
     <bean id="messageSource"
-          class="org.springframework.context.support.ResourceBundleMessageSource">
+          class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="defaultEncoding" value="UTF-8"/>
         <property name="basename" value="openclassroom" />
     </bean>
 

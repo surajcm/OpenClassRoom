@@ -16,7 +16,6 @@
     <!--[if lt IE 9]>
     <script src="js/html5.js"></script>
     <![endif]-->
-    <title>Log In</title>
     <style>
         body {
             padding-top: 20px;
@@ -36,6 +35,7 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-5 col-offset-3">
+            <div class="well">
             <form:form method="POST" commandName="userForm">
                 <h1 class="margin-base-vertical">Login</h1>
                 <div class="input-group">
@@ -44,7 +44,7 @@
                 </div>
                 <br />
                 <div class="input-group">
-                    <span class="input-group-addon"><spring:message code="openclassroom.password" text="Password:" /></span>
+                    <span class="input-group-addon"><spring:message code="openclassroom.password" text="Password:" />&nbsp;&nbsp;</span>
                     <form:password path="password" cssClass="form-control" id="password" /><form:errors path="password" />
                 </div>
                 <br />
@@ -52,6 +52,7 @@
                     <button type="submit" onclick="javascript:submitLogIn()" class="btn btn-success">Login</button>
                 </div>
             </form:form>
+            </div>
         </div>
     </div>
 </div>

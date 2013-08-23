@@ -8,6 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link href="../css/bootstrap.css" rel="stylesheet" type="text/css">
     <link href="../css/bootstrap-responsive.css" rel="stylesheet" type="text/css">
+    <link href="../css/bootstrap-theme.css" rel="stylesheet" type="text/css">
     <link href="../css/font-awesome.css" rel="stylesheet" type="text/css">
     <link href="../css/font-awesome-ie7.css" rel="stylesheet" type="text/css">
     <!-- HTML5 shim for IE backwards compatibility -->
