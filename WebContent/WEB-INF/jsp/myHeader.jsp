@@ -79,7 +79,7 @@
             <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" href="#"onclick="javascript:goToHome();" >Home</a>
-        <div class="nav-collapse collapse">
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
             <ul class="nav navbar-nav">
                 <script type="text/javascript">
                     if ( document.forms[0].loggedInRole != null
