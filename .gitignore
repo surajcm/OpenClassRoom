@@ -1,4 +1,13 @@
-build/classes/
 *.class
-**/*.class
+*.war
+*.ear
+hs_err_pid*
+*.iml
+*.ipr
+*.iws
+.gradle/
+build/
+.classpath
+.project
+.settings/
 
