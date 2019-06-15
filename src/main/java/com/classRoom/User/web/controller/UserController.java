@@ -7,7 +7,7 @@ import com.classRoom.User.web.form.UserForm;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
+import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,7 +20,8 @@ import java.util.List;
  *         Date: Nov 27, 2010
  *         Time: 2:38:15 PM
  */
-public class UserController extends MultiActionController {
+@Controller
+public class UserController {
 
     /**
      * user Delegate instance
