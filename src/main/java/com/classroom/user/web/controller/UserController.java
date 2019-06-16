@@ -57,40 +57,21 @@ public class UserController {
 
     @GetMapping(value = {"/", "/welcome"})
     public String welcome(Model model) {
+        log.info("received incoming traffic and redirected to user/logIn");
         return "user/logIn";
     }
-
-    /**
-     * Used in automatic redirect to Log in screen
-     *
-     * @param request  HttpServletRequest instance
-     * @param response HttpServletResponse instance
-     * @return ModelAndView to render
-     */
-    @SuppressWarnings("unused")
-    public ModelAndView Index(HttpServletRequest request,
-                              HttpServletResponse response) {
-        log.info(" Inside Index method of User Controller ");
-        UserForm userForm = new UserForm();
-        UserVO userVO = new UserVO();
-        userForm.setUser(userVO);
-        return new ModelAndView("user/logIn", "userForm", userForm);
-    }
-
     /**
      * controller for first log in action
      *
-     * @param request  HttpServletRequest instance
-     * @param response HttpServletResponse instance
      * @param userForm user default spring settings
      * @return ModelAndView to render
      */
     @SuppressWarnings("unused")
-    public ModelAndView LogIn(HttpServletRequest request,
-                              HttpServletResponse response, UserForm userForm) {
-        log.info(" Inside LogIn method of User Controller ");
+    @GetMapping("/login")
+    public String logIn(UserForm userForm) {
+        log.info("Inside LogIn method of User Controller ");
         log.info("UserForm is "+userForm);
-        UserVO realUser;
+        UserVO realUser = null;
         try {
             if (getUserDelegate() == null) {
                 throw new Exception("A configuration error has been occurred ");
@@ -108,11 +89,11 @@ public class UserController {
             } else {
                 userForm.setMessage(" An Unknown Error has been occurred !!");
             }
-            return new ModelAndView("user/logIn", "userForm", userForm);
+            //return new ModelAndView("user/logIn", "userForm", userForm);
         } catch (Exception e1) {
             e1.printStackTrace();
             userForm.setMessage(" An Unknown Error has been occurred !!");
-            return new ModelAndView("user/logIn", "userForm", userForm);
+            //return new ModelAndView("user/logIn", "userForm", userForm);
         }
         if (realUser != null && realUser.getRole() != null) {
             /*if(realUser.getRole().equalsIgnoreCase("ADMIN")){
@@ -123,12 +104,12 @@ public class UserController {
             }*/
              userForm.setLoggedInUser(realUser.getName());
              userForm.setLoggedInRole(realUser.getRole());
-             return ToHome(request, response, userForm);
+             //return ToHome(request, response, userForm);
 
         } else {
             userForm.setMessage(" An Unknown Error has been occurred !!");
-            return new ModelAndView("user/logIn", "userForm", userForm);
         }
+        return "user/logIn";
     }
 
     /**
