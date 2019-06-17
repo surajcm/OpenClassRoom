@@ -58,8 +58,20 @@ public class UserController {
     @GetMapping(value = {"/", "/welcome"})
     public String welcome(Model model) {
         log.info("received incoming traffic and redirected to user/logIn");
-        return "user/logIn";
+        return "logIn";
     }
+
+    @GetMapping(value = "/login")
+    public String login(Model model, String error, String logout) {
+        if (error != null) {
+            model.addAttribute("error", "Your username and password is invalid.");
+        }
+        if (logout != null) {
+            model.addAttribute("message", "You have been logged out successfully.");
+        }
+        return "login";
+    }
+
     /**
      * controller for first log in action
      *
@@ -67,7 +79,7 @@ public class UserController {
      * @return ModelAndView to render
      */
     @SuppressWarnings("unused")
-    @GetMapping("/login")
+    //@GetMapping("/login")
     public String logIn(UserForm userForm) {
         log.info("Inside LogIn method of User Controller ");
         log.info("UserForm is "+userForm);
@@ -109,7 +121,7 @@ public class UserController {
         } else {
             userForm.setMessage(" An Unknown Error has been occurred !!");
         }
-        return "user/logIn";
+        return "logIn";
     }
 
     /**
