@@ -12,14 +12,13 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <link href="../css/bootstrap.css" rel="stylesheet" type="text/css">
-    <link href="../css/bootstrap-responsive.css" rel="stylesheet" type="text/css">
-    <link href="../css/bootstrap-theme.css" rel="stylesheet" type="text/css">
-    <link href="../css/font-awesome.css" rel="stylesheet" type="text/css">
-    <link href="../css/font-awesome-ie7.css" rel="stylesheet" type="text/css">
-    <!-- HTML5 shim for IE backwards compatibility -->
+    <link href="${contextPath}/resources/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${contextPath}/resources/css/common.css" rel="stylesheet">
+    <link href="${contextPath}/resources/css/font-awesome.min.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
-    <script src="../js/html5.js"></script>
+    <script src="${contextPath}/resources/js/html5shiv.min.js"></script>
+    <script src="${contextPath}/resources/js/respond.min.js"></script>
     <![endif]-->
     <style type="text/css">
         #menuimg {
@@ -77,15 +76,18 @@
     </script>
 </head>
 <body>
-<div class="navbar-wrapper">
-    <div class="navbar navbar-inverse navbar-static-top">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="#"onclick="javascript:goToHome();" >OpenClassRoom</a>
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
+<div class="navbar navbar-static-top navbar-inner">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="${contextPath}/welcome"><p style="color:white">OpenClassRoom</p></a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <script type="text/javascript">
                     if ( document.forms[0].loggedInRole != null
@@ -111,11 +113,12 @@
                     </ul>
                 </li>
             </ul>
-        </div><!--/.nav-collapse -->
+        </div>
     </div>
 </div>
-<script src="../js/jquery-latest.js"></script>
-<script src="../js/bootstrap.js"></script>
+
+<script src="${contextPath}/resources/js/jquery.min.js"></script>
+<script src="${contextPath}/resources/js/bootstrap.min.js"></script>
 <script>
     $(document).ready(function()
     {
