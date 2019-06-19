@@ -14,7 +14,7 @@
 <div class="container">
   <div class="row">
 
-    <div class="main pull-right">
+    <div class="main">
 
       <h3>Please Log In, or <a href="#">Sign Up</a></h3>
       <div class="row">

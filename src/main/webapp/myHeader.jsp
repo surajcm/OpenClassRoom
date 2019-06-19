@@ -76,49 +76,44 @@
     </script>
 </head>
 <body>
-<div class="navbar navbar-static-top navbar-inner">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="${contextPath}/welcome"><p style="color:white">OpenClassRoom</p></a>
-        </div>
-        <div class="collapse navbar-collapse navbar-ex1-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
+<nav class="navbar navbar-static-top navbar-inner">
+    <a class="navbar-brand" href="${contextPath}/welcome"><p style="color:white">OpenClassRoom</p></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="nav navbar-nav">
+            <script type="text/javascript">
+                if ( document.forms[0].loggedInRole != null
+                        && document.forms[0].loggedInRole.value != null
+                        && document.forms[0].loggedInRole.value == 'ADMIN'){
+                    document.write("<li id='user'><a href='#' onclick='javascript:listMe();' >User</a></li>");
+                }
+            </script>
+        </ul>
+        <ul class="nav navbar-nav pull-right">
+            <li class="dropdown">
                 <script type="text/javascript">
-                    if ( document.forms[0].loggedInRole != null
-                            && document.forms[0].loggedInRole.value != null
-                            && document.forms[0].loggedInRole.value == 'ADMIN'){
-                        document.write("<li id='user'><a href='#' onclick='javascript:listMe();' >User</a></li>");
+                    if ( document.forms[0].loggedInUser != null
+                            && document.forms[0].loggedInUser.value != null
+                            && document.forms[0].loggedInUser.value.length > 0){
+                        document.write("<a href='#' class='dropdown-toggle' data-toggle='dropdown'>"+document.forms[0].loggedInUser.value+"<b class='caret'></b></a>");
+                    }else {
+                        document.write("<a href='#' class='dropdown-toggle' data-toggle='dropdown'>Unknown User<b class='caret'></b></a>");
                     }
                 </script>
-            </ul>
-            <ul class="nav navbar-nav pull-right">
-                <li class="dropdown">
-                    <script type="text/javascript">
-                        if ( document.forms[0].loggedInUser != null
-                                && document.forms[0].loggedInUser.value != null
-                                && document.forms[0].loggedInUser.value.length > 0){
-                            document.write("<a href='#' class='dropdown-toggle' data-toggle='dropdown'>"+document.forms[0].loggedInUser.value+"<b class='caret'></b></a>");
-                        }else {
-                            document.write("<a href='#' class='dropdown-toggle' data-toggle='dropdown'>Unknown User<b class='caret'></b></a>");
-                        }
-                    </script>
-                    <ul class="dropdown-menu">
-                        <li><a href="#" onclick="javascript:LogMeOut();">Log Out</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
+                <ul class="dropdown-menu">
+                    <li><a href="#" onclick="javascript:LogMeOut();">Log Out</a></li>
+                </ul>
+            </li>
+        </ul>
     </div>
-</div>
+</nav>
 
-<script src="${contextPath}/resources/js/jquery.min.js"></script>
+<script src="${contextPath}/resources/js/jquery-3.2.1.min.js"></script>
+<script src="${contextPath}/resources/js/popper.min.js"></script>
 <script src="${contextPath}/resources/js/bootstrap.min.js"></script>
+
 <script>
     $(document).ready(function()
     {
