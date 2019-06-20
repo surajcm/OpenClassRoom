@@ -1,94 +1,108 @@
 package com.classroom.user.dao.impl;
 
 import com.classroom.user.dao.UserDAO;
+import com.classroom.user.dao.entities.User;
 import com.classroom.user.domain.UserVO;
 import com.classroom.user.exception.UserException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author : Suraj Muraleedharan
- *         Date: Nov 27, 2010
- *         Time: 12:43:13 PM
+ * Date: Nov 27, 2010
+ * Time: 12:43:13 PM
  */
-public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
-    private SimpleJdbcInsert insertUser;
+@Repository
+@SuppressWarnings("unused")
+public class UserDAOImpl implements UserDAO {
 
-    //logger
-    private final Log log = LogFactory.getLog(UserDAOImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UserDAOImpl.class);
 
-    //select all from table
-    private static final String GET_ALL_USERS_SQL = " select * from user order by modifiedOn";
+    @Autowired
+    private UserRepository userRepository;
 
-    private static final String SEARCH_USERS_SQL = " select * from user ";
-
-    // select single user information from database
-    private static final String GET_SINGLE_USER_SQL = " select * from user where id = ? ";
-
-    // get user details by name
-    private static final String GET_USER_BY_NAME_SQL = " select * from user where LogId = ? ";
-
-    // update user details
-    private static final String UPDATE_USER_SQL = " update user set name = ?, LogId = ? ,Pass = ?, Role = ?, modifiedOn = ? , modifiedBy = ? where id = ?";
-
-    // delete user details by id
-    private static final String DELETE_BY_ID_SQL = " delete from user where id = ? ";
+    @PersistenceContext
+    private EntityManager em;
 
     /**
-     * log in
+     * LOG in
      *
-     * @param user user
-     * @return User instance from database
+     * @param userVO userVO
+     * @return user instance from database
      * @throws UserException on error
      */
-    public UserVO logIn(UserVO user) throws UserException {
-        UserVO currentUser;
+    @Override
+    public UserVO logIn(UserVO userVO) throws UserException {
+        User user;
         try {
-            currentUser = getUserByName(user.getName());
+            user = userRepository.findByLogInId(userVO.getLoginId());
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            LOG.error(e.getLocalizedMessage());
             throw new UserException(UserException.DATABASE_ERROR);
         }
 
-        if (currentUser != null) {
-            log.info(" User details fetched successfully,for user name " + user.getName());
-            // check whether the password given is correct or not
-            if (!user.getPassword().equalsIgnoreCase(currentUser.getPassword())) {
+        if (user != null) {
+            LOG.info(" user details fetched successfully,for user name {}", user.getName());
+            if (!userVO.getPassword().equalsIgnoreCase(user.getPassword())) {
                 throw new UserException(UserException.INCORRECT_PASSWORD);
             }
-            log.info(" Password matched successfully, user details are " + currentUser.toString());
+            LOG.info(" Password matched successfully, user details are {}", user);
         } else {
             // invalid user
             throw new UserException(UserException.UNKNOWN_USER);
         }
-        return currentUser;
+        return convertTOUserVO(user);
     }
 
     /**
      * getAllUserDetails to list all user details
      *
-     * @return List of User
-     * @throws UserException
+     * @return List of user
+     * @throws UserException on db error
      */
+    @Override
     public List<UserVO> getAllUserDetails() throws UserException {
         List<UserVO> userList;
         try {
-            userList = getAllUsers();
+            List<User> users = userRepository.findAll();
+            userList = convertUsersToUserVOs(users);
         } catch (DataAccessException e) {
             throw new UserException(UserException.DATABASE_ERROR);
         }
         return userList;
+    }
+
+    private List<UserVO> convertUsersToUserVOs(List<User> users) {
+        List<UserVO> userVOS = new ArrayList<>();
+        users.forEach(user -> {
+            UserVO userVO = new UserVO();
+            userVO.setId(user.getUserId());
+            userVO.setName(user.getName());
+            userVO.setLoginId(user.getLogInId());
+            userVO.setPassword(user.getPassword());
+            userVO.setRole(user.getRole());
+            userVO.setCreatedBy(user.getCreatedBy());
+            userVO.setLastModifiedBy(user.getModifiedBy());
+            userVOS.add(userVO);
+        });
+        return userVOS;
     }
 
     /**
@@ -99,7 +113,7 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
      */
     public void addNewUser(UserVO user) throws UserException {
         try {
-            saveUser(user);
+            save(user);
         } catch (DataAccessException e) {
             e.printStackTrace();
             throw new UserException(UserException.DATABASE_ERROR);
@@ -114,26 +128,18 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
      * @throws UserException on error
      */
     public UserVO getUserDetailsFromID(Long id) throws UserException {
-        UserVO userVO;
+        UserVO userVO = null;
         try {
-            userVO = getUserById(id);
+            Optional<User> optionalUser = userRepository.findById(id);
+            if (optionalUser.isPresent()) {
+                User user = optionalUser.get();
+                userVO = convertTOUserVO(user);
+            }
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            LOG.error(e.getLocalizedMessage());
             throw new UserException(UserException.DATABASE_ERROR);
         }
         return userVO;
-    }
-
-
-    /**
-     * get all the user details from the database
-     *
-     * @return List of users
-     * @throws DataAccessException on error
-     */
-    @SuppressWarnings("unchecked")
-    public List<UserVO> getAllUsers() throws DataAccessException {
-        return getJdbcTemplate().query(GET_ALL_USERS_SQL, new UserRowMapper());
     }
 
     /**
@@ -145,139 +151,99 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
      */
     @SuppressWarnings("unchecked")
     public List<UserVO> searchAllUsers(UserVO searchUser) throws DataAccessException {
-        StringBuilder dynamicQuery = new StringBuilder(SEARCH_USERS_SQL);
-        Boolean isWhereAppended = Boolean.FALSE;
-        if (searchUser.getName() != null && searchUser.getName().trim().length() > 0) {
-            dynamicQuery.append(" where ");
-            isWhereAppended = Boolean.TRUE;
-            if (searchUser.getIncludes()) {
-                dynamicQuery.append(" name like '%").append(searchUser.getName()).append("%'");
-            } else if (searchUser.getStartsWith()) {
-                dynamicQuery.append(" name like '").append(searchUser.getName()).append("%'");
-            } else {
-                dynamicQuery.append(" name like '").append(searchUser.getName()).append("'");
-            }
+        CriteriaBuilder builder = em.unwrap(Session.class).getCriteriaBuilder();
+        CriteriaQuery<User> criteria = builder.createQuery(User.class);
+        Root<User> userRoot = criteria.from(User.class);
+        criteria.select(userRoot);
+
+        if (!StringUtils.isEmpty(searchUser.getName())) {
+            String pattern = searchPattern(searchUser.getIncludes(), searchUser.getStartsWith(),
+                    searchUser.getName());
+            criteria.where(builder.like(userRoot.get("name"), pattern));
         }
 
-        if (searchUser.getLoginId() != null && searchUser.getLoginId().trim().length() > 0) {
-            if (!isWhereAppended) {
-                dynamicQuery.append(" where ");
-            } else {
-                dynamicQuery.append(" and ");
-            }
-            if (searchUser.getIncludes()) {
-                dynamicQuery.append(" LogId like '%").append(searchUser.getLoginId()).append("%'");
-            } else if (searchUser.getStartsWith()) {
-                dynamicQuery.append(" LogId like '").append(searchUser.getLoginId()).append("%'");
-            } else {
-                dynamicQuery.append(" LogId like '").append(searchUser.getLoginId()).append("'");
-            }
+        if (!StringUtils.isEmpty(searchUser.getLoginId())) {
+            String pattern = searchPattern(searchUser.getIncludes(), searchUser.getStartsWith(),
+                    searchUser.getLoginId());
+            criteria.where(builder.like(userRoot.get("logInId"), pattern));
         }
 
-        if (searchUser.getRole() != null && searchUser.getRole().trim().length() > 0) {
-            if (!isWhereAppended) {
-                dynamicQuery.append(" where ");
-            } else {
-                dynamicQuery.append(" and ");
-            }
-            if (searchUser.getIncludes()) {
-                dynamicQuery.append(" role like '%").append(searchUser.getRole()).append("%'");
-            } else if (searchUser.getStartsWith()) {
-                dynamicQuery.append(" role like '").append(searchUser.getRole()).append("%'");
-            } else {
-                dynamicQuery.append(" role like '").append(searchUser.getRole()).append("'");
-            }
+        if (!StringUtils.isEmpty(searchUser.getRole())) {
+            String pattern = searchPattern(searchUser.getIncludes(), searchUser.getStartsWith(),
+                    searchUser.getRole());
+            criteria.where(builder.equal(userRoot.get("role"), pattern));
         }
-
-        log.info("Query generated is " + dynamicQuery);
-        return (List<UserVO>) getJdbcTemplate().query(dynamicQuery.toString(), new UserRowMapper());
+        List<User> resultUsers = em.unwrap(Session.class).createQuery(criteria).getResultList();
+        return convertUsersToUserVOs(resultUsers);
     }
 
-    /**
-     * getUserById
-     *
-     * @param id id
-     * @return User
-     */
-    @SuppressWarnings("unchecked")
-    public UserVO getUserById(Long id) {
-        return (UserVO) getJdbcTemplate().queryForObject(GET_SINGLE_USER_SQL, new Object[]{id}, new UserRowMapper());
-
-    }
-
-    /**
-     * getUserById
-     *
-     * @param loginId loginId
-     * @return User
-     * @throws DataAccessException on error
-     */
-    @SuppressWarnings("unchecked")
-    public UserVO getUserByName(String loginId) throws DataAccessException {
-        log.info("login required for login Id "+loginId);
-        return (UserVO) getJdbcTemplate().queryForObject(GET_USER_BY_NAME_SQL, new Object[]{loginId}, new UserRowMapper());
+    private String searchPattern(boolean includes, boolean startsWith, String field) {
+        String pattern;
+        if (includes) {
+            pattern = "%" + field + "%";
+        } else if (startsWith) {
+            pattern = field + "%";
+        } else {
+            pattern = field;
+        }
+        return pattern;
     }
 
     /**
      * updateUser
      *
-     * @param user user
+     * @param userVO user
      */
-    public void updateUser(UserVO user) throws UserException {
-        Object[] parameters = new Object[]{
-                user.getName(),
-                user.getLoginId(),
-                user.getPassword(),
-                user.getRole(),
-                new Date(),
-                user.getLastModifiedBy(),
-                user.getId()};
+    @Override
+    public void updateUser(UserVO userVO) {
+        Optional<User> optionalUser = userRepository.findById(userVO.getId());
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setName(userVO.getName());
+            user.setLogInId(userVO.getLoginId());
+            user.setPassword(userVO.getPassword());
+            user.setRole(userVO.getRole());
+            user.setModifiedBy(userVO.getLastModifiedBy());
+        }
+    }
 
+
+    /**
+     * save to add a new user
+     *
+     * @param userVO user
+     * @throws UserException on error
+     */
+    public void save(UserVO userVO) throws UserException {
+        User user = convertToUser(userVO);
         try {
-            getJdbcTemplate().update(UPDATE_USER_SQL, parameters);
+            userRepository.save(user);
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            LOG.error(e.getLocalizedMessage());
             throw new UserException(UserException.DATABASE_ERROR);
         }
     }
 
-    /**
-     * save user
-     *
-     * @param user user
-     * @throws DataAccessException on error
-     */
-    public void saveUser(final UserVO user) throws DataAccessException {
-        insertUser = new SimpleJdbcInsert(getDataSource()).withTableName("user").usingGeneratedKeyColumns("id");
-        SqlParameterSource parameters = new MapSqlParameterSource()
-                .addValue("name", user.getName())
-                .addValue("LogId", user.getLoginId())
-                .addValue("Pass", user.getPassword())
-                .addValue("role", user.getRole())
-                .addValue("createdOn", user.getCreatedDate())
-                .addValue("modifiedOn", user.getModifiedDate())
-                .addValue("createdBy", user.getCreatedBy())
-                .addValue("modifiedBy", user.getLastModifiedBy());
-        Number newId = insertUser.executeAndReturnKey(parameters);
-        log.info(" the queryForInt resulted in  " + newId.longValue());
-        user.setId(newId.longValue());
-
+    private User convertToUser(UserVO userVO) {
+        User user = new User();
+        user.setName(userVO.getName());
+        user.setLogInId(userVO.getLoginId());
+        user.setPassword(userVO.getPassword());
+        user.setRole(userVO.getRole());
+        user.setCreatedBy(userVO.getCreatedBy());
+        user.setModifiedBy(userVO.getLastModifiedBy());
+        return user;
     }
+
 
     /**
      * delete user
      *
      * @param id id
      */
-    @SuppressWarnings("unused")
-    public void deleteUser(Long id) throws UserException {
-        try {
-            Object[] parameters = new Object[]{id};
-            getJdbcTemplate().update(DELETE_BY_ID_SQL, parameters);
-        } catch (DataAccessException e) {
-            e.printStackTrace();
-            throw new UserException(UserException.DATABASE_ERROR);
-        }
+    @Override
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
     }
 
     /**
@@ -321,9 +287,25 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
             user.setCreatedDate(resultSet.getDate("createdOn"));
             user.setLastModifiedBy(resultSet.getString("modifiedBy"));
             user.setModifiedDate(resultSet.getDate("modifiedOn"));
-
             return user;
         }
+    }
 
+    @Override
+    public UserVO findByUsername(String username) {
+        User user = userRepository.findByName(username);
+        return convertTOUserVO(user);
+    }
+
+    private UserVO convertTOUserVO(User user) {
+        UserVO userVO = new UserVO();
+        userVO.setId(user.getUserId());
+        userVO.setName(user.getName());
+        userVO.setLoginId(user.getLogInId());
+        userVO.setPassword(user.getPassword());
+        userVO.setRole(user.getRole());
+        userVO.setCreatedBy(user.getCreatedBy());
+        userVO.setLastModifiedBy(user.getModifiedBy());
+        return userVO;
     }
 }

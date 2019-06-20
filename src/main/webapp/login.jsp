@@ -31,15 +31,17 @@
                             <span class="span-or">or</span>
                         </div>
 
-                        <form role="form">
+                        <form class="form" role="form" method="post" action="${contextPath}/login" accept-charset="UTF-8" id="login-nav">
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                             <div class="form-group">
                               <label for="inputUsernameEmail">Username or email</label>
-                              <input type="text" class="form-control" id="inputUsernameEmail">
+                              <input name="username" type="text" class="form-control" placeholder="Username" id="inputUsernameEmail"
+                                                                                  autofocus="true" required/>
                             </div>
                             <div class="form-group">
                               <a class="pull-right" href="#">Forgot password?</a>
                               <label for="inputPassword">Password</label>
-                              <input type="password" class="form-control" id="inputPassword">
+                             <input id="inputPassword" name="password" type="password" class="form-control" placeholder="Password" required/>
                             </div>
                             <div class="checkbox pull-right">
                               <label>

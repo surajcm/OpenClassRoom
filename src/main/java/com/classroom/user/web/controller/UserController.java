@@ -55,13 +55,13 @@ public class UserController {
         this.userDelegate = userDelegate;
     }
 
-    @GetMapping(value = {"/", "/welcome"})
+    @GetMapping("/")
     public String welcome(Model model) {
-        log.info("received incoming traffic and redirected to user/logIn");
-        return "logIn";
+        log.info("received incoming traffic and redirected to welcome");
+        return "welcome";
     }
 
-    @GetMapping(value = "/login")
+    @GetMapping(value = "/MainPage")
     public String login(Model model, String error, String logout) {
         if (error != null) {
             model.addAttribute("error", "Your username and password is invalid.");
