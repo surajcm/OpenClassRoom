@@ -12,9 +12,9 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <!--link href="${contextPath}/resources/css/bootstrap.min.css" rel="stylesheet"-->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css.map" rel="stylesheet">
+    <link href="${contextPath}/resources/css/bootstrap.min.css" rel="stylesheet">
+    <!--link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"-->
+    <!--link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css.map" rel="stylesheet"-->
     <link href="${contextPath}/resources/css/common.css" rel="stylesheet">
     <link href="${contextPath}/resources/css/font-awesome.min.css" rel="stylesheet">
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -22,44 +22,7 @@
     <script src="${contextPath}/resources/js/html5shiv.min.js"></script>
     <script src="${contextPath}/resources/js/respond.min.js"></script>
     <![endif]-->
-    <style type="text/css">
-        #menuimg {
-            background-repeat: repeat-x;
-            background-color: #A9A9A9;
-            margin:auto;
-            border-collapse:collapse;
-        }
 
-        div.menu {
-            float: left;
-            margin-left: 10px;
-            font-size: 0.5em;
-            font-family: Verdana, Arial, Helvetica, sans-serif;
-        }
-
-        div.popup a:hover { background-color: #faa; }
-        div.menu:hover div:first-child { border-bottom: none; }
-        div.menu div.popup { display: none; }
-        div.menu:hover div.popup {
-            display: block;
-            background-color: #99f;
-        }
-
-
-        div.menu div {
-            width: 175px;
-            background-color: #66f;
-            padding: 5px;
-            border: solid 2px blue;
-        }
-
-        #menuFirstLine {
-            font-weight: bold;
-            font-size: 08;
-            font-family: Verdana, Arial, Helvetica, sans-serif;
-        }
-
-    </style>
     <script type="text/javascript">
         function listMe(){
             document.forms[0].action="<%=request.getContextPath()%>"+"/user/ListAll.htm";
@@ -78,42 +41,40 @@
     </script>
 </head>
 <body>
-<nav class="navbar navbar-static-top navbar-inner">
-    <a class="navbar-brand" href="${contextPath}/welcome"><p style="color:white">OpenClassRoom</p></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="nav navbar-nav">
-            <script type="text/javascript">
-                if ( document.forms[0].loggedInRole != null
-                        && document.forms[0].loggedInRole.value != null
-                        && document.forms[0].loggedInRole.value == 'ADMIN'){
-                    document.write("<li id='user'><a href='#' onclick='javascript:listMe();' >User</a></li>");
-                }
-            </script>
-        </ul>
-        <ul class="nav navbar-nav pull-right">
-            <li class="dropdown">
-                <script type="text/javascript">
-                    if ( document.forms[0].loggedInUser != null
-                            && document.forms[0].loggedInUser.value != null
-                            && document.forms[0].loggedInUser.value.length > 0){
-                        document.write("<a href='#' class='dropdown-toggle' data-toggle='dropdown'>"+document.forms[0].loggedInUser.value+"<b class='caret'></b></a>");
-                    }else {
-                        document.write("<a href='#' class='dropdown-toggle' data-toggle='dropdown'>Unknown User<b class='caret'></b></a>");
-                    }
-                </script>
-                <ul class="dropdown-menu">
-                    <li><a href="#" onclick="javascript:LogMeOut();">Log Out</a></li>
-                </ul>
-            </li>
-        </ul>
+<nav class="navbar navbar-default navbar-inverse" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="${contextPath}/welcome"><p style="color:white">OpenClassRoom</p></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">Home</a></li>
+                <li><a href="${contextPath}/plans">Plans</a></li>
+                <li><a href="${contextPath}/practice">FAQ</a></li>
+            </ul>
+            <ul class="navbar-nav my-2 my-lg-0">
+                <li class="nav-item dropdown">
+                    <c:choose>
+                        <c:when test="${pageContext.request.userPrincipal.name != null}">
+                            <a href='#' id='dropdownMenu1' class='nav-link dropdown-toggle' role="button" data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>${pageContext.request.userPrincipal.name} </a>
+                        </c:when>
+                        <c:otherwise>
+                            <a href='#' id='dropdownMenu1' class='nav-link dropdown-toggle' role="button" data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Unknown User</a>
+                        </c:otherwise>
+                    </c:choose>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        <a href="#" class="dropdown-item" onclick="javascript:LogMeOut();">Log Out</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </div>
 </nav>
 
 <script src="${contextPath}/resources/js/jquery-3.2.1.min.js"></script>
-<script src="${contextPath}/resources/js/popper.min.js"></script>
 <script src="${contextPath}/resources/js/bootstrap.min.js"></script>
 
 <script>

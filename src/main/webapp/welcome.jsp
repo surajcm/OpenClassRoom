@@ -20,10 +20,7 @@
     <div class="jumbotron center">
         <h1>Welcome to Open class room</h1>
         <br />
-        <p>This is the home page of open class room. We use a spring multi action controller to work.
-            The UI is enriched with <b>Twitter Bootstrap framework</b> It has only 2 different users. Only Admin user is able to access the user management page.</p>
-        <p><b>Have a nice time browsing through the code</b></p>
-
+        <p>This is the home page of OpenClassRoom.</b></p>
     </div>
     <br />
 </body>
