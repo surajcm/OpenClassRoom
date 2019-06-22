@@ -73,58 +73,6 @@ public class UserController {
     }
 
     /**
-     * controller for first log in action
-     *
-     * @param userForm user default spring settings
-     * @return ModelAndView to render
-     */
-    @SuppressWarnings("unused")
-    //@GetMapping("/login")
-    public String logIn(UserForm userForm) {
-        log.info("Inside LogIn method of User Controller ");
-        log.info("UserForm is "+userForm);
-        UserVO realUser = null;
-        try {
-            if (getUserDelegate() == null) {
-                throw new Exception("A configuration error has been occurred ");
-            }
-            realUser = getUserDelegate().logIn(userForm.getCurrentUser());
-        } catch (UserException e) {
-            e.printStackTrace();
-            log.error(" Exception type in controller " + e.ExceptionType);
-            if (e.getExceptionType().equalsIgnoreCase(UserException.UNKNOWN_USER)) {
-                userForm.setMessage(" Invalid User Credentials, No user Found !!");
-            } else if (e.getExceptionType().equalsIgnoreCase(UserException.INCORRECT_PASSWORD)) {
-                userForm.setMessage(" Incorrect Password. !! ");
-            } else if (e.getExceptionType().equalsIgnoreCase(UserException.DATABASE_ERROR)) {
-                userForm.setMessage(" An error occurred while fetching data from database. !! ");
-            } else {
-                userForm.setMessage(" An Unknown Error has been occurred !!");
-            }
-            //return new ModelAndView("user/logIn", "userForm", userForm);
-        } catch (Exception e1) {
-            e1.printStackTrace();
-            userForm.setMessage(" An Unknown Error has been occurred !!");
-            //return new ModelAndView("user/logIn", "userForm", userForm);
-        }
-        if (realUser != null && realUser.getRole() != null) {
-            /*if(realUser.getRole().equalsIgnoreCase("ADMIN")){
-            userForm.setLoggedInUser(realUser.getName());
-            userForm.setLoggedInRole(realUser.getRole());
-            log.info("Logged in successfully");
-            return ListAll(request, response, userForm);
-            }*/
-             userForm.setLoggedInUser(realUser.getName());
-             userForm.setLoggedInRole(realUser.getRole());
-             //return ToHome(request, response, userForm);
-
-        } else {
-            userForm.setMessage(" An Unknown Error has been occurred !!");
-        }
-        return "logIn";
-    }
-
-    /**
      * Used to list all users (can be done only by admin user)
      *
      * @param request  HttpServletRequest instance

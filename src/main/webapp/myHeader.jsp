@@ -41,36 +41,30 @@
     </script>
 </head>
 <body>
-<nav class="navbar navbar-default navbar-inverse" role="navigation">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="${contextPath}/welcome"><p style="color:white">OpenClassRoom</p></a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-        </div>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
-                <li><a href="${contextPath}/plans">Plans</a></li>
-                <li><a href="${contextPath}/practice">FAQ</a></li>
-            </ul>
-            <ul class="navbar-nav my-2 my-lg-0">
-                <li class="nav-item dropdown">
-                    <c:choose>
-                        <c:when test="${pageContext.request.userPrincipal.name != null}">
-                            <a href='#' id='dropdownMenu1' class='nav-link dropdown-toggle' role="button" data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>${pageContext.request.userPrincipal.name} </a>
-                        </c:when>
-                        <c:otherwise>
-                            <a href='#' id='dropdownMenu1' class='nav-link dropdown-toggle' role="button" data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Unknown User</a>
-                        </c:otherwise>
-                    </c:choose>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                        <a href="#" class="dropdown-item" onclick="javascript:LogMeOut();">Log Out</a>
-                    </div>
-                </li>
-            </ul>
-        </div>
+<nav class="navbar navbar-default navbar-expand-lg navbar-inverse">
+    <a class="navbar-brand text-light" href="${contextPath}/welcome">OpenClassRoom</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#demo-navbar" aria-controls="demo-navbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="demo-navbar">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active"><a href="#">Home</a></li>
+            <li class="nav-item"><a href="${contextPath}/plans">Plans</a></li>
+            <li class="nav-item"><a href="${contextPath}/practice">FAQ</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+                <c:if test="${pageContext.request.userPrincipal.name != null}">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome, ${pageContext.request.userPrincipal.name} <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/user/preferences"><i class="icon-cog"></i> Preferences</a></li>
+                    <li><a href="/help/support"><i class="icon-envelope"></i> Contact Support</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#" onclick="document.forms['logoutForm'].submit()"><i class="icon-off"></i> Logout</a></li>
+                </ul>
+                </c:if>
+            </li>
+        </ul>
     </div>
 </nav>
 
