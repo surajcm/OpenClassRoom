@@ -48,9 +48,8 @@
     </button>
     <div class="collapse navbar-collapse" id="demo-navbar">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item active"><a href="#">Home</a></li>
-            <li class="nav-item"><a href="${contextPath}/plans">Plans</a></li>
-            <li class="nav-item"><a href="${contextPath}/practice">FAQ</a></li>
+            <li class="nav-item"><a class="nav-link text-light" href="${contextPath}/plans">Plans</a></li>
+            <li class="nav-item"><a class="nav-link text-light" href="${contextPath}/faq">FAQ</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">
