@@ -1,6 +1,6 @@
 buildscript {
     ext {
-	    springBootVersion = '2.1.5.RELEASE'
+	    springBootVersion = '2.1.6.RELEASE'
         applicationDefaultJvmArgs = ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005']
     }
     repositories {
@@ -21,8 +21,8 @@ jar {
     version = '0.0.1-SNAPSHOT'
 }
 
-sourceCompatibility = 1.11
-targetCompatibility = 1.11
+sourceCompatibility = 1.12
+targetCompatibility = 1.12
 
 repositories {
     mavenCentral()
