@@ -21,8 +21,8 @@ jar {
     version = '0.0.1-SNAPSHOT'
 }
 
-sourceCompatibility = 1.12
-targetCompatibility = 1.12
+sourceCompatibility = 1.13
+targetCompatibility = 1.13
 
 repositories {
     mavenCentral()
