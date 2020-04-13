@@ -23,10 +23,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    protected void configure(final HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                    .antMatchers("/resources/**", "/registration", "/src/main/webapp/resources/css/**", "/src/main/webapp/resources/js/**").permitAll()
+                    .antMatchers("/resources/**",
+                            "/registration",
+                            "/src/main/webapp/resources/css/**",
+                            "/src/main/webapp/resources/js/**")
+                .permitAll()
                     .anyRequest().authenticated()
                     .and()
                 .formLogin()
@@ -38,7 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    public void configureGlobal(final AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bcryptPasswordEncoder());
     }
 }

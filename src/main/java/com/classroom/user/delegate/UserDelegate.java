@@ -6,42 +6,37 @@ import com.classroom.user.service.UserService;
 
 import java.util.List;
 
-/**
- * @author : Suraj Muraleedharan
- *         Date: Nov 27, 2010
- *         Time: 12:28:55 PM
- */
 @SuppressWarnings("unused")
 public class UserDelegate {
 
     /**
-     * user service instance
+     * user service instance.
      */
     private UserService userService;
 
     /**
-     * spring setter for user service
+     * spring setter for user service.
      *
      * @param userService userService instance
      */
     @SuppressWarnings("unused")
-    public void setUserService(UserService userService) {
+    public void setUserService(final UserService userService) {
         this.userService = userService;
     }
 
     /**
-     * action for log in
+     * action for log in.
      *
      * @param user user instance
      * @return User instance from database
      * @throws UserException on error
      */
-    public UserVO logIn(UserVO user) throws UserException {
+    public UserVO logIn(final UserVO user) throws UserException {
         return userService.logIn(user);
     }
 
     /**
-     * getAllUserDetails to list all user details
+     * getAllUserDetails to list all user details.
      *
      * @return List of User
      * @throws UserException on error
@@ -51,54 +46,54 @@ public class UserDelegate {
     }
 
     /**
-     * create new user
+     * create new user.
      *
      * @param user user
      * @throws UserException on error
      */
-    public void addNewUser(UserVO user) throws UserException {
+    public void addNewUser(final UserVO user) throws UserException {
         userService.addNewUser(user);
     }
 
     /**
-     * getUserDetailsFromID to get the single user details from its id
+     * getUserDetailsFromID to get the single user details from its id.
      *
      * @param id id
      * @return UserVO
      * @throws UserException on error
      */
-    public UserVO getUserDetailsFromID(Long id) throws UserException {
+    public UserVO getUserDetailsFromID(final Long id) throws UserException {
         return userService.getUserDetailsFromID(id);
     }
 
     /**
-     * updates the current user
+     * updates the current user.
      *
      * @param user user
      * @throws UserException on error
      */
-    public void UpdateUser(UserVO user) throws UserException {
-        userService.UpdateUser(user);
+    public void updateUser(final UserVO user) throws UserException {
+        userService.updateUser(user);
     }
 
     /**
-     * deletes the selected user
+     * deletes the selected user.
      *
      * @param id id of the user
      * @throws UserException on error
      */
-    public void deleteUser(Long id) throws UserException {
+    public void deleteUser(final Long id) throws UserException {
         userService.deleteUser(id);
     }
 
     /**
-     * search for a list of users
+     * search for a list of users.
      *
      * @param searchUser UserVO
      * @return List of User
      * @throws UserException on error
      */
-    public List<UserVO> searchUser(UserVO searchUser) throws UserException {
+    public List<UserVO> searchUser(final UserVO searchUser) throws UserException {
         return userService.searchUserDetails(searchUser);
     }
 }

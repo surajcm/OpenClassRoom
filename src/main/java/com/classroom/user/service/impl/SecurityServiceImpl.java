@@ -29,20 +29,18 @@ public class SecurityServiceImpl implements SecurityService {
         if (userDetails instanceof UserDetails) {
             return ((UserDetails) userDetails).getUsername();
         }
-
         return null;
     }
 
     @Override
-    public void autologin(String username, String password) {
+    public void autologin(final String username, final String password) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                 new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
-
         try {
             webSecurityConfigurerAdapter.authenticationManagerBean().authenticate(usernamePasswordAuthenticationToken);
-        } catch (Exception e) {
-            logger.error(e.getMessage());
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
         }
         if (usernamePasswordAuthenticationToken.isAuthenticated()) {
             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);

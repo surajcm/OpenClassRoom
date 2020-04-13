@@ -1,0 +1,63 @@
+apply plugin: 'checkstyle'
+apply plugin: 'pmd'
+apply plugin: 'jacoco'
+//apply plugin: 'com.github.spotbugs'
+
+checkstyle {
+    toolVersion = '8.31'
+    ignoreFailures = false
+    maxWarnings = 0
+    checkstyleMain {
+        configFile = file("config/checkstyle/checkstyle.xml")
+    }
+
+    checkstyleTest {
+        configFile = file("config/checkstyle/checkstyleTest.xml")
+    }
+}
+
+//spotbugs {
+    //toolVersion = '3.1.12'
+    //ignoreFailures = true
+//}
+
+pmd {
+    toolVersion = '6.21.0'
+    ignoreFailures = false
+    ruleSetFiles = files("config/pmd/ruleset.xml")
+    ruleSets = []
+    rulePriority = 2
+    incrementalAnalysis = true
+}
+
+jacoco {
+    toolVersion = "0.8.3+"
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        xml.enabled false
+        html.enabled true
+        html.stylesheet resources.text.fromFile('config/checkstyle/xsl/checkstyle-simple.xsl')
+    }
+}
+
+tasks.withType(Pmd) {
+    reports {
+        xml.enabled false
+        html.enabled true
+    }
+}
+cpd {
+    toolVersion = '6.21.0'
+    minimumTokenCount = 40
+    ignoreFailures = true
+}
+
+cpdCheck {
+    reports {
+        text.enabled = true
+        xml.enabled = false
+    }
+    source = sourceSets.main.allJava
+}

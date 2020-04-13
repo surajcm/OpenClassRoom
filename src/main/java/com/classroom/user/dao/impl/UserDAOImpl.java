@@ -24,11 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * @author : Suraj Muraleedharan
- * Date: Nov 27, 2010
- * Time: 12:43:13 PM
- */
 @Repository
 @SuppressWarnings("unused")
 public class UserDAOImpl implements UserDAO {
@@ -42,19 +37,19 @@ public class UserDAOImpl implements UserDAO {
     private EntityManager em;
 
     /**
-     * LOG in
+     * LOG in.
      *
      * @param userVO userVO
      * @return user instance from database
      * @throws UserException on error
      */
     @Override
-    public UserVO logIn(UserVO userVO) throws UserException {
+    public UserVO logIn(final UserVO userVO) throws UserException {
         User user;
         try {
             user = userRepository.findByLogInId(userVO.getLoginId());
-        } catch (DataAccessException e) {
-            LOG.error(e.getLocalizedMessage());
+        } catch (DataAccessException ex) {
+            LOG.error(ex.getLocalizedMessage());
             throw new UserException(UserException.DATABASE_ERROR);
         }
 
@@ -72,7 +67,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     /**
-     * getAllUserDetails to list all user details
+     * getAllUserDetails to list all user details.
      *
      * @return List of user
      * @throws UserException on db error
@@ -83,13 +78,13 @@ public class UserDAOImpl implements UserDAO {
         try {
             List<User> users = userRepository.findAll();
             userList = convertUsersToUserVOs(users);
-        } catch (DataAccessException e) {
+        } catch (DataAccessException ex) {
             throw new UserException(UserException.DATABASE_ERROR);
         }
         return userList;
     }
 
-    private List<UserVO> convertUsersToUserVOs(List<User> users) {
+    private List<UserVO> convertUsersToUserVOs(final List<User> users) {
         List<UserVO> userVOS = new ArrayList<>();
         users.forEach(user -> {
             UserVO userVO = new UserVO();
@@ -106,28 +101,28 @@ public class UserDAOImpl implements UserDAO {
     }
 
     /**
-     * addNewUser to add a new user
+     * addNewUser to add a new user.
      *
      * @param user user
      * @throws UserException on error
      */
-    public void addNewUser(UserVO user) throws UserException {
+    public void addNewUser(final UserVO user) throws UserException {
         try {
             save(user);
-        } catch (DataAccessException e) {
-            e.printStackTrace();
+        } catch (DataAccessException ex) {
+            ex.printStackTrace();
             throw new UserException(UserException.DATABASE_ERROR);
         }
     }
 
     /**
-     * getUserDetailsFromID to get the single user details from its id
+     * getUserDetailsFromID to get the single user details from its id.
      *
      * @param id id
      * @return UserVO
      * @throws UserException on error
      */
-    public UserVO getUserDetailsFromID(Long id) throws UserException {
+    public UserVO getUserDetailsFromID(final Long id) throws UserException {
         UserVO userVO = null;
         try {
             Optional<User> optionalUser = userRepository.findById(id);
@@ -135,22 +130,22 @@ public class UserDAOImpl implements UserDAO {
                 User user = optionalUser.get();
                 userVO = convertTOUserVO(user);
             }
-        } catch (DataAccessException e) {
-            LOG.error(e.getLocalizedMessage());
+        } catch (DataAccessException ex) {
+            LOG.error(ex.getLocalizedMessage());
             throw new UserException(UserException.DATABASE_ERROR);
         }
         return userVO;
     }
 
     /**
-     * search for all the user details from the database
+     * search for all the user details from the database.
      *
      * @param searchUser UserVO
      * @return List of users
      * @throws DataAccessException on error
      */
     @SuppressWarnings("unchecked")
-    public List<UserVO> searchAllUsers(UserVO searchUser) throws DataAccessException {
+    public List<UserVO> searchAllUsers(final UserVO searchUser) throws DataAccessException {
         CriteriaBuilder builder = em.unwrap(Session.class).getCriteriaBuilder();
         CriteriaQuery<User> criteria = builder.createQuery(User.class);
         Root<User> userRoot = criteria.from(User.class);
@@ -177,7 +172,7 @@ public class UserDAOImpl implements UserDAO {
         return convertUsersToUserVOs(resultUsers);
     }
 
-    private String searchPattern(boolean includes, boolean startsWith, String field) {
+    private String searchPattern(final boolean includes, final boolean startsWith, final String field) {
         String pattern;
         if (includes) {
             pattern = "%" + field + "%";
@@ -190,12 +185,12 @@ public class UserDAOImpl implements UserDAO {
     }
 
     /**
-     * updateUser
+     * updateUser.
      *
      * @param userVO user
      */
     @Override
-    public void updateUser(UserVO userVO) {
+    public void updateUser(final UserVO userVO) {
         Optional<User> optionalUser = userRepository.findById(userVO.getId());
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
@@ -209,22 +204,22 @@ public class UserDAOImpl implements UserDAO {
 
 
     /**
-     * save to add a new user
+     * save to add a new user.
      *
      * @param userVO user
      * @throws UserException on error
      */
-    public void save(UserVO userVO) throws UserException {
+    public void save(final UserVO userVO) throws UserException {
         User user = convertToUser(userVO);
         try {
             userRepository.save(user);
-        } catch (DataAccessException e) {
-            LOG.error(e.getLocalizedMessage());
+        } catch (DataAccessException ex) {
+            LOG.error(ex.getLocalizedMessage());
             throw new UserException(UserException.DATABASE_ERROR);
         }
     }
 
-    private User convertToUser(UserVO userVO) {
+    private User convertToUser(final UserVO userVO) {
         User user = new User();
         user.setName(userVO.getName());
         user.setLogInId(userVO.getLoginId());
@@ -237,46 +232,64 @@ public class UserDAOImpl implements UserDAO {
 
 
     /**
-     * delete user
+     * delete user.
      *
      * @param id id
      */
     @Override
-    public void deleteUser(Long id) {
+    public void deleteUser(final Long id) {
         userRepository.deleteById(id);
     }
 
     /**
-     * search for a list of users
+     * search for a list of users.
      *
      * @param searchUser UserVO
      * @return List of User
      * @throws UserException on error
      */
-    public List<UserVO> searchUserDetails(UserVO searchUser) throws UserException {
+    public List<UserVO> searchUserDetails(final UserVO searchUser) throws UserException {
         List<UserVO> userList;
         try {
             userList = searchAllUsers(searchUser);
-        } catch (DataAccessException e) {
+        } catch (DataAccessException ex) {
             throw new UserException(UserException.DATABASE_ERROR);
         }
         return userList;
     }
 
+    @Override
+    public UserVO findByUsername(final String username) {
+        User user = userRepository.findByName(username);
+        return convertTOUserVO(user);
+    }
+
+    private UserVO convertTOUserVO(final User user) {
+        UserVO userVO = new UserVO();
+        userVO.setId(user.getUserId());
+        userVO.setName(user.getName());
+        userVO.setLoginId(user.getLogInId());
+        userVO.setPassword(user.getPassword());
+        userVO.setRole(user.getRole());
+        userVO.setCreatedBy(user.getCreatedBy());
+        userVO.setLastModifiedBy(user.getModifiedBy());
+        return userVO;
+    }
+
     /**
-     * Row mapper as inner class
+     * Row mapper as inner class.
      */
     private class UserRowMapper implements RowMapper {
 
         /**
-         * method to map the result to vo
+         * method to map the result to vo.
          *
          * @param resultSet resultSet instance
-         * @param i         i instance
+         * @param instance         i instance
          * @return UserVO as Object
          * @throws SQLException on error
          */
-        public Object mapRow(ResultSet resultSet, int i) throws SQLException {
+        public Object mapRow(final ResultSet resultSet, final int instance) throws SQLException {
             UserVO user = new UserVO();
             user.setId(resultSet.getLong("id"));
             user.setName(resultSet.getString("name"));
@@ -289,23 +302,5 @@ public class UserDAOImpl implements UserDAO {
             user.setModifiedDate(resultSet.getDate("modifiedOn"));
             return user;
         }
-    }
-
-    @Override
-    public UserVO findByUsername(String username) {
-        User user = userRepository.findByName(username);
-        return convertTOUserVO(user);
-    }
-
-    private UserVO convertTOUserVO(User user) {
-        UserVO userVO = new UserVO();
-        userVO.setId(user.getUserId());
-        userVO.setName(user.getName());
-        userVO.setLoginId(user.getLogInId());
-        userVO.setPassword(user.getPassword());
-        userVO.setRole(user.getRole());
-        userVO.setCreatedBy(user.getCreatedBy());
-        userVO.setLastModifiedBy(user.getModifiedBy());
-        return userVO;
     }
 }

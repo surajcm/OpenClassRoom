@@ -1,42 +1,42 @@
 buildscript {
     ext {
-	    springBootVersion = '2.2.5.RELEASE'
-        applicationDefaultJvmArgs = ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005']
+	    applicationDefaultJvmArgs = ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005']
     }
     repositories {
 	    mavenCentral()
-    }
-    dependencies {
-	    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
 }
 
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
-
-jar {
-    baseName = 'openClassRoom'
-    version = '0.0.1-SNAPSHOT'
+plugins {
+    id 'java'
+    id 'idea'
+    id 'org.springframework.boot' version '2.2.6.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    //id 'net.ltgt.errorprone' version '0.8.1'
+    id 'com.github.spotbugs' version '1.6.8' apply false
+    id 'de.aaschmid.cpd' version '3.1'
 }
 
-sourceCompatibility = 1.13
-targetCompatibility = 1.13
+group = 'com.quiz.darkhold'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = JavaVersion.VERSION_13
 
 repositories {
     mavenCentral()
 }
 
-dependencies {
-    compile('org.springframework.boot:spring-boot-starter-web')
-    compile('org.springframework.boot:spring-boot-starter-data-jpa')
-    compile('org.springframework.boot:spring-boot-starter-security')
-    compile("org.springframework.boot:spring-boot-devtools")
-    compile("org.springframework.boot:spring-boot-starter-actuator")
-    compile('org.hsqldb:hsqldb:2.4.0')
-    compile('org.apache.tomcat.embed:tomcat-embed-jasper')
-    compile('jstl:jstl:+')
-    testCompile('org.springframework.boot:spring-boot-starter-test')
-    testCompile("junit:junit")
+apply from: 'gradle/dependencies.gradle'
+apply from: 'gradle/staticCodeAnalysis.gradle'
+
+test {
+    useJUnitPlatform()
 }
+
+test.dependsOn checkstyleMain
+test.dependsOn checkstyleTest
+bootRun.dependsOn checkstyleMain
+
+check.dependsOn(cpdCheck, pmdMain)

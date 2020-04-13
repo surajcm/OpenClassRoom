@@ -6,28 +6,24 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-/**
- * @author : Suraj Muraleedharan
- *         Date: Nov 27, 2010
- *         Time: 2:38:15 PM
- */
+
 @Controller
 public class UserController {
 
 
     /**
-     * logger for user controller
+     * logger for user controller.
      */
     private final Log log = LogFactory.getLog(UserController.class);
 
     @GetMapping(value = {"/", "/welcome"})
-    public String welcome(Model model) {
+    public String welcome(final Model model) {
         log.info("received incoming traffic and redirected to welcome");
         return "welcome";
     }
 
     @GetMapping(value = "/login")
-    public String login(Model model, String error, String logout) {
+    public String login(final Model model, final String error, final String logout) {
         if (error != null) {
             model.addAttribute("error", "Your username and password is invalid.");
         }
@@ -38,7 +34,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/user/preferences")
-    public String preference(Model model) {
+    public String preference(final Model model) {
         log.info("received incoming traffic and redirected to preferences");
         return "user/preferences";
     }

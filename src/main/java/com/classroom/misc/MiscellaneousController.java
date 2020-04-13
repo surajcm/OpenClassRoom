@@ -11,19 +11,19 @@ public class MiscellaneousController {
     private final Log log = LogFactory.getLog(MiscellaneousController.class);
 
     @GetMapping("/plans")
-    public String welcome(Model model) {
+    public String welcome(final Model model) {
         log.info("received incoming traffic and redirected to plans");
         return "misc/plans";
     }
 
     @GetMapping("/faq")
-    public String faq(Model model) {
+    public String faq(final Model model) {
         log.info("received incoming traffic and redirected to faq");
         return "misc/faq";
     }
 
     @GetMapping("/help/support")
-    public String support(Model model) {
+    public String support(final Model model) {
         log.info("received incoming traffic and redirected to support");
         return "misc/support";
     }
