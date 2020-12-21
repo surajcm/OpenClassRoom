@@ -42,14 +42,14 @@
 </head>
 <body>
 <nav class="navbar navbar-default navbar-expand-lg navbar-inverse">
-    <a class="navbar-brand text-light" href="${contextPath}/welcome">OpenClassRoom</a>
+    <a class="navbar-brand" href="${contextPath}/welcome">OpenClassRoom</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#demo-navbar" aria-controls="demo-navbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="demo-navbar">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item"><a class="nav-link text-light" href="${contextPath}/plans">Plans</a></li>
-            <li class="nav-item"><a class="nav-link text-light" href="${contextPath}/faq">FAQ</a></li>
+            <li class="nav-item"><a class="nav-link" href="${contextPath}/plans">Plans</a></li>
+            <li class="nav-item"><a class="nav-link" href="${contextPath}/faq">FAQ</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">

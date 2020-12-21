@@ -1,8 +1,8 @@
 body {
     padding-bottom: 40px;
-    background-color: #eee;
+    #background-color: #eee;
     font-family: 'Lato',sans-serif;
-    background-image: linear-gradient(to right, #19547b 0%, #ffd89b 100%);
+    #background-image: linear-gradient(to right, #19547b 0%, #ffd89b 100%);
 }
 
 .navbar-inner {
