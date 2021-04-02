@@ -1,6 +1,4 @@
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,6 +11,9 @@
         <div class="mask rgba-black-light d-flex justify-content-center align-items-center">
             <div class="container">
                 <div class="row wow fadeIn">
+                    <div class="col-md-6 col-xl-5 mb-4">
+                        <img id="adv" src="${contextPath}/resources/img/undraw_teaching_f1cm.svg" alt=""></img>
+                    </div>
                     <div class="col-md-6 mb-4 white-text text-center text-md-left">
                         <h3>Please Log In, or <a href="#">Sign Up</a></h3>
                         <form class="form" role="form" method="post" action="${contextPath}/login" accept-charset="UTF-8" id="login-nav">
@@ -27,18 +28,10 @@
                               <label for="inputPassword">Password</label>
                              <input id="inputPassword" name="password" type="password" class="form-control" placeholder="Password" required/>
                             </div>
-                            <div class="checkbox pull-right">
-                              <label>
-                                <input type="checkbox">
-                                Remember me </label>
+                            <div class="pull-right">
+                              <button type="submit" class="btn btn btn-primary">Log In</button>
                             </div>
-                            <button type="submit" class="btn btn btn-primary">
-                              Log In
-                            </button>
                         </form>
-                    </div>
-                    <div class="col-md-6 col-xl-5 mb-4">
-                        <img id="adv" src="${contextPath}/resources/img/undraw_teaching_f1cm.svg" alt=""></img>
                     </div>
                 </div>
             </div>

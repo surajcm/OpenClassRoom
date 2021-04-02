@@ -8,7 +8,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     runtimeOnly("org.springframework.boot:spring-boot-devtools")
 
-    implementation("org.hsqldb:hsqldb:2.5.0")
+    implementation("org.hsqldb:hsqldb:2.5.1")
     implementation("org.apache.tomcat.embed:tomcat-embed-jasper")
     implementation("jstl:jstl:+")
 
