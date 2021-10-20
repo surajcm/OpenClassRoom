@@ -15,14 +15,10 @@ import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 @SuppressWarnings("unused")
@@ -76,7 +72,7 @@ public class UserDAOImpl implements UserDAO {
     public List<UserVO> getAllUserDetails() throws UserException {
         List<UserVO> userList;
         try {
-            List<User> users = userRepository.findAll();
+            var users = userRepository.findAll();
             userList = convertUsersToUserVOs(users);
         } catch (DataAccessException ex) {
             throw new UserException(UserException.DATABASE_ERROR);
@@ -125,7 +121,7 @@ public class UserDAOImpl implements UserDAO {
     public UserVO getUserDetailsFromID(final Long id) throws UserException {
         UserVO userVO = null;
         try {
-            Optional<User> optionalUser = userRepository.findById(id);
+            var optionalUser = userRepository.findById(id);
             if (optionalUser.isPresent()) {
                 User user = optionalUser.get();
                 userVO = convertTOUserVO(user);
@@ -146,33 +142,35 @@ public class UserDAOImpl implements UserDAO {
      */
     @SuppressWarnings("unchecked")
     public List<UserVO> searchAllUsers(final UserVO searchUser) throws DataAccessException {
-        CriteriaBuilder builder = em.unwrap(Session.class).getCriteriaBuilder();
-        CriteriaQuery<User> criteria = builder.createQuery(User.class);
-        Root<User> userRoot = criteria.from(User.class);
+        var builder = em.unwrap(Session.class).getCriteriaBuilder();
+        var criteria = builder.createQuery(User.class);
+        var userRoot = criteria.from(User.class);
         criteria.select(userRoot);
 
-        if (!StringUtils.isEmpty(searchUser.getName())) {
-            String pattern = searchPattern(searchUser.getIncludes(), searchUser.getStartsWith(),
+        if (StringUtils.hasText(searchUser.getName())) {
+            var pattern = searchPattern(searchUser.getIncludes(), searchUser.getStartsWith(),
                     searchUser.getName());
             criteria.where(builder.like(userRoot.get("name"), pattern));
         }
 
-        if (!StringUtils.isEmpty(searchUser.getLoginId())) {
-            String pattern = searchPattern(searchUser.getIncludes(), searchUser.getStartsWith(),
+        if (StringUtils.hasText(searchUser.getLoginId())) {
+            var pattern = searchPattern(searchUser.getIncludes(), searchUser.getStartsWith(),
                     searchUser.getLoginId());
             criteria.where(builder.like(userRoot.get("logInId"), pattern));
         }
 
-        if (!StringUtils.isEmpty(searchUser.getRole())) {
-            String pattern = searchPattern(searchUser.getIncludes(), searchUser.getStartsWith(),
+        if (StringUtils.hasText(searchUser.getRole())) {
+            var pattern = searchPattern(searchUser.getIncludes(), searchUser.getStartsWith(),
                     searchUser.getRole());
             criteria.where(builder.equal(userRoot.get("role"), pattern));
         }
-        List<User> resultUsers = em.unwrap(Session.class).createQuery(criteria).getResultList();
+        var resultUsers = em.unwrap(Session.class).createQuery(criteria).getResultList();
         return convertUsersToUserVOs(resultUsers);
     }
 
-    private String searchPattern(final boolean includes, final boolean startsWith, final String field) {
+    private String searchPattern(final boolean includes,
+                                 final boolean startsWith,
+                                 final String field) {
         String pattern;
         if (includes) {
             pattern = "%" + field + "%";
@@ -191,9 +189,9 @@ public class UserDAOImpl implements UserDAO {
      */
     @Override
     public void updateUser(final UserVO userVO) {
-        Optional<User> optionalUser = userRepository.findById(userVO.getId());
+        var optionalUser = userRepository.findById(userVO.getId());
         if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
+            var user = optionalUser.get();
             user.setName(userVO.getName());
             user.setLogInId(userVO.getLoginId());
             user.setPassword(userVO.getPassword());
@@ -210,7 +208,7 @@ public class UserDAOImpl implements UserDAO {
      * @throws UserException on error
      */
     public void save(final UserVO userVO) throws UserException {
-        User user = convertToUser(userVO);
+        var user = convertToUser(userVO);
         try {
             userRepository.save(user);
         } catch (DataAccessException ex) {
@@ -220,7 +218,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     private User convertToUser(final UserVO userVO) {
-        User user = new User();
+        var user = new User();
         user.setName(userVO.getName());
         user.setLogInId(userVO.getLoginId());
         user.setPassword(userVO.getPassword());
@@ -260,12 +258,12 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public UserVO findByUsername(final String username) {
-        User user = userRepository.findByName(username);
+        var user = userRepository.findByName(username);
         return convertTOUserVO(user);
     }
 
     private UserVO convertTOUserVO(final User user) {
-        UserVO userVO = new UserVO();
+        var userVO = new UserVO();
         userVO.setId(user.getUserId());
         userVO.setName(user.getName());
         userVO.setLoginId(user.getLogInId());
@@ -290,7 +288,7 @@ public class UserDAOImpl implements UserDAO {
          * @throws SQLException on error
          */
         public Object mapRow(final ResultSet resultSet, final int instance) throws SQLException {
-            UserVO user = new UserVO();
+            var user = new UserVO();
             user.setId(resultSet.getLong("id"));
             user.setName(resultSet.getString("name"));
             user.setLoginId(resultSet.getString("LogId"));

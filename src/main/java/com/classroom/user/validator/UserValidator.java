@@ -28,7 +28,7 @@ public class UserValidator implements Validator {
      */
     public void validate(final Object obj, final Errors errors) {
         log.info(" Inside the validate method");
-        UserVO user = (UserVO) obj;
+        var user = (UserVO) obj;
 
         if (user.getName().trim().length() == 0) {
             errors.rejectValue("name", "error.required.user.name", "User Name is required");

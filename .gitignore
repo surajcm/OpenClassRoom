@@ -10,4 +10,5 @@ build/
 .classpath
 .project
 .settings/
+logs/
 

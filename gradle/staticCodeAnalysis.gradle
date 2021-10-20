@@ -4,7 +4,7 @@ apply plugin: 'jacoco'
 //apply plugin: 'com.github.spotbugs'
 
 checkstyle {
-    toolVersion = '8.31'
+    toolVersion = '8.42'
     ignoreFailures = false
     maxWarnings = 0
     checkstyleMain {
@@ -31,21 +31,28 @@ pmd {
 }
 
 jacoco {
-    toolVersion = "0.8.3+"
+    toolVersion = "0.8.7+"
+    reportsDirectory = file("build/reports/jacoco/")
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true
+    }
 }
 
 tasks.withType(Checkstyle) {
     reports {
-        xml.enabled false
-        html.enabled true
+        xml.required = false
+        html.required = true
         html.stylesheet resources.text.fromFile('config/checkstyle/xsl/checkstyle-simple.xsl')
     }
 }
 
 tasks.withType(Pmd) {
     reports {
-        xml.enabled false
-        html.enabled true
+        xml.required = false
+        html.required = true
     }
 }
 cpd {
@@ -56,8 +63,19 @@ cpd {
 
 cpdCheck {
     reports {
-        text.enabled = true
-        xml.enabled = false
+        text.required = true
+        xml.required = false
     }
     source = sourceSets.main.allJava
+}
+
+
+check.dependsOn jacocoTestCoverageVerification
+
+test {
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
 }

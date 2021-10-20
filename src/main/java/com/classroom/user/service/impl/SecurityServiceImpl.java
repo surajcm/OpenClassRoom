@@ -25,17 +25,17 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public String findLoggedInUsername() {
-        Object userDetails = SecurityContextHolder.getContext().getAuthentication().getDetails();
-        if (userDetails instanceof UserDetails) {
-            return ((UserDetails) userDetails).getUsername();
+        var userDetails = SecurityContextHolder.getContext().getAuthentication().getDetails();
+        if (userDetails instanceof UserDetails details) {
+            return details.getUsername();
         }
         return null;
     }
 
     @Override
     public void autologin(final String username, final String password) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+        var userDetails = userDetailsService.loadUserByUsername(username);
+        var usernamePasswordAuthenticationToken =
                 new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
         try {
             webSecurityConfigurerAdapter.authenticationManagerBean().authenticate(usernamePasswordAuthenticationToken);
@@ -44,7 +44,7 @@ public class SecurityServiceImpl implements SecurityService {
         }
         if (usernamePasswordAuthenticationToken.isAuthenticated()) {
             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-            logger.debug(String.format("Auto login %s successfully!", username));
+            logger.debug("Auto login {} successfully!", username);
         }
     }
 }

@@ -12,15 +12,13 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <link href="${contextPath}/resources/css/bootstrap.min.css" rel="stylesheet">
-    <!--link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"-->
-    <!--link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css.map" rel="stylesheet"-->
-    <link href="${contextPath}/resources/css/common.css" rel="stylesheet">
-    <link href="${contextPath}/resources/css/font-awesome.min.css" rel="stylesheet">
+    <link href="${contextPath}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${contextPath}/css/common.css" rel="stylesheet">
+    <link href="${contextPath}/css/font-awesome.min.css" rel="stylesheet">
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
-    <script src="${contextPath}/resources/js/html5shiv.min.js"></script>
-    <script src="${contextPath}/resources/js/respond.min.js"></script>
+    <script src="${contextPath}/js/html5shiv.min.js"></script>
+    <script src="${contextPath}/js/respond.min.js"></script>
     <![endif]-->
 
     <script type="text/javascript">
@@ -67,8 +65,8 @@
     </div>
 </nav>
 
-<script src="${contextPath}/resources/js/jquery-3.2.1.min.js"></script>
-<script src="${contextPath}/resources/js/bootstrap.min.js"></script>
+<script src="${contextPath}/js/jquery-3.2.1.min.js"></script>
+<script src="${contextPath}/js/bootstrap.min.js"></script>
 
 <script>
     $(document).ready(function()

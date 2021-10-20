@@ -6,11 +6,14 @@ import com.classroom.user.exception.UserException;
 import com.classroom.user.service.UserService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class UserServiceImpl implements UserService {
 
+    private static final String MESSAGE = "Exception type in service impl: {} ";
     /**
      * user service instance.
      */
@@ -41,7 +44,7 @@ public class UserServiceImpl implements UserService {
             log.info(" Inside user service impl");
             realUser = userDAO.logIn(user);
         } catch (UserException ex) {
-            log.error(" Exception type in service impl " + ex.getExceptionType());
+            log.error("Exception type in service impl : {}" , ex.getCause());
             throw new UserException(ex.getExceptionType());
         } catch (Exception e1) {
             e1.printStackTrace();
@@ -59,7 +62,7 @@ public class UserServiceImpl implements UserService {
         try {
             userList = userDAO.getAllUserDetails();
         } catch (UserException ex) {
-            log.error(" Exception type in service impl " + ex.getExceptionType());
+            log.error(MESSAGE, ex.getCause());
             throw new UserException(ex.getExceptionType());
         } catch (Exception e1) {
             e1.printStackTrace();
@@ -77,7 +80,7 @@ public class UserServiceImpl implements UserService {
         try {
             userDAO.addNewUser(user);
         } catch (UserException ex) {
-            log.error(" Exception type in service impl " + ex.getExceptionType());
+            log.error(MESSAGE, ex.getCause());
             throw new UserException(ex.getExceptionType());
         } catch (Exception e1) {
             e1.printStackTrace();
@@ -96,7 +99,7 @@ public class UserServiceImpl implements UserService {
         try {
             userVO = userDAO.getUserDetailsFromID(id);
         } catch (UserException ex) {
-            log.error(" Exception type in service impl " + ex.getExceptionType());
+            log.error(MESSAGE, ex.getCause());
             throw new UserException(ex.getExceptionType());
         } catch (Exception e1) {
             e1.printStackTrace();
@@ -115,7 +118,7 @@ public class UserServiceImpl implements UserService {
         try {
             userDAO.updateUser(user);
         } catch (UserException ex) {
-            log.error(" Exception type in service impl " + ex.getExceptionType());
+            log.error(MESSAGE, ex.getCause());
             throw new UserException(ex.getExceptionType());
         } catch (Exception e1) {
             e1.printStackTrace();
@@ -132,7 +135,7 @@ public class UserServiceImpl implements UserService {
         try {
             userDAO.deleteUser(id);
         } catch (UserException ex) {
-            log.error(" Exception type in service impl " + ex.getExceptionType());
+            log.error(MESSAGE, ex.getCause());
             throw new UserException(ex.getExceptionType());
         } catch (Exception e1) {
             e1.printStackTrace();
@@ -151,7 +154,7 @@ public class UserServiceImpl implements UserService {
         try {
             userList = userDAO.searchUserDetails(searchUser);
         } catch (UserException ex) {
-            log.error(" Exception type in service impl " + ex.getExceptionType());
+            log.error(MESSAGE, ex.getCause());
             throw new UserException(ex.getExceptionType());
         } catch (Exception e1) {
             e1.printStackTrace();
