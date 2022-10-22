@@ -141,8 +141,7 @@ public class UserForm {
      */
     public UserVO getCurrentUser() {
         UserVO userVO = new UserVO();
-        userVO.setName(getName());
-        userVO.setLoginId(getLoginId());
+        userVO.setEmail(getLoginId());
         userVO.setPassword(getPassword());
         userVO.setRole(getRole());
         return userVO;

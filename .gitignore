@@ -11,4 +11,4 @@ build/
 .project
 .settings/
 logs/
-
+*.idea/

@@ -30,7 +30,7 @@ public class UserValidator implements Validator {
         log.info(" Inside the validate method");
         var user = (UserVO) obj;
 
-        if (user.getName().trim().length() == 0) {
+        if (user.getEmail().trim().length() == 0) {
             errors.rejectValue("name", "error.required.user.name", "User Name is required");
         }
         if (user.getPassword().trim().length() == 0) {

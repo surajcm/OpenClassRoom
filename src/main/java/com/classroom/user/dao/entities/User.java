@@ -14,18 +14,21 @@ import java.time.ZoneId;
 
 @Entity
 //todo : add schema
-@Table(name = "user")
+@Table(name = "member")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long userId;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "first_name")
+    private String firstName;
 
-    @Column(name = "logInId")
-    private String logInId;
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "email")
+    private String email;
 
     @Column(name = "password")
     private String password;
@@ -53,20 +56,28 @@ public class User {
         this.userId = userId;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(final String name) {
-        this.name = name;
+    public void setFirstName(final String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getLogInId() {
-        return logInId;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLogInId(final String logInId) {
-        this.logInId = logInId;
+    public void setLastName(final String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(final String email) {
+        this.email = email;
     }
 
     public String getPassword() {

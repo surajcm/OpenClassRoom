@@ -41,16 +41,17 @@ public class UserDAOImpl implements UserDAO {
      */
     @Override
     public UserVO logIn(final UserVO userVO) throws UserException {
+        LOG.info("At login, User vo is {}", userVO);
         User user;
         try {
-            user = userRepository.findByLogInId(userVO.getLoginId());
+            user = userRepository.findByEmail(userVO.getEmail());
         } catch (DataAccessException ex) {
             LOG.error(ex.getLocalizedMessage());
             throw new UserException(UserException.DATABASE_ERROR);
         }
 
         if (user != null) {
-            LOG.info(" user details fetched successfully,for user name {}", user.getName());
+            LOG.info(" user details fetched successfully,for user name {}", user.getEmail());
             if (!userVO.getPassword().equalsIgnoreCase(user.getPassword())) {
                 throw new UserException(UserException.INCORRECT_PASSWORD);
             }
@@ -85,8 +86,8 @@ public class UserDAOImpl implements UserDAO {
         users.forEach(user -> {
             UserVO userVO = new UserVO();
             userVO.setId(user.getUserId());
-            userVO.setName(user.getName());
-            userVO.setLoginId(user.getLogInId());
+            userVO.setFirstName(user.getFirstName());
+            userVO.setEmail(user.getEmail());
             userVO.setPassword(user.getPassword());
             userVO.setRole(user.getRole());
             userVO.setCreatedBy(user.getCreatedBy());
@@ -119,6 +120,7 @@ public class UserDAOImpl implements UserDAO {
      * @throws UserException on error
      */
     public UserVO getUserDetailsFromID(final Long id) throws UserException {
+        LOG.info("At getUserDetailsFromID");
         UserVO userVO = null;
         try {
             var optionalUser = userRepository.findById(id);
@@ -147,16 +149,16 @@ public class UserDAOImpl implements UserDAO {
         var userRoot = criteria.from(User.class);
         criteria.select(userRoot);
 
-        if (StringUtils.hasText(searchUser.getName())) {
+        if (StringUtils.hasText(searchUser.getFirstName())) {
             var pattern = searchPattern(searchUser.getIncludes(), searchUser.getStartsWith(),
-                    searchUser.getName());
-            criteria.where(builder.like(userRoot.get("name"), pattern));
+                    searchUser.getFirstName());
+            criteria.where(builder.like(userRoot.get("first_name"), pattern));
         }
 
-        if (StringUtils.hasText(searchUser.getLoginId())) {
+        if (StringUtils.hasText(searchUser.getEmail())) {
             var pattern = searchPattern(searchUser.getIncludes(), searchUser.getStartsWith(),
-                    searchUser.getLoginId());
-            criteria.where(builder.like(userRoot.get("logInId"), pattern));
+                    searchUser.getEmail());
+            criteria.where(builder.like(userRoot.get("email"), pattern));
         }
 
         if (StringUtils.hasText(searchUser.getRole())) {
@@ -192,8 +194,9 @@ public class UserDAOImpl implements UserDAO {
         var optionalUser = userRepository.findById(userVO.getId());
         if (optionalUser.isPresent()) {
             var user = optionalUser.get();
-            user.setName(userVO.getName());
-            user.setLogInId(userVO.getLoginId());
+            user.setFirstName(userVO.getFirstName());
+            user.setLastName(userVO.getLastName());
+            user.setEmail(userVO.getEmail());
             user.setPassword(userVO.getPassword());
             user.setRole(userVO.getRole());
             user.setModifiedBy(userVO.getLastModifiedBy());
@@ -219,8 +222,9 @@ public class UserDAOImpl implements UserDAO {
 
     private User convertToUser(final UserVO userVO) {
         var user = new User();
-        user.setName(userVO.getName());
-        user.setLogInId(userVO.getLoginId());
+        user.setFirstName(userVO.getFirstName());
+        user.setLastName(userVO.getLastName());
+        user.setEmail(userVO.getEmail());
         user.setPassword(userVO.getPassword());
         user.setRole(userVO.getRole());
         user.setCreatedBy(userVO.getCreatedBy());
@@ -257,16 +261,19 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public UserVO findByUsername(final String username) {
-        var user = userRepository.findByName(username);
+    public UserVO findByEmail(final String email) {
+        LOG.info(" at findByUsername");
+        var user = userRepository.findByEmail(email);
+        LOG.info("user is {}", user);
         return convertTOUserVO(user);
     }
 
     private UserVO convertTOUserVO(final User user) {
         var userVO = new UserVO();
         userVO.setId(user.getUserId());
-        userVO.setName(user.getName());
-        userVO.setLoginId(user.getLogInId());
+        userVO.setFirstName(user.getFirstName());
+        userVO.setLastName(user.getLastName());
+        userVO.setEmail(user.getEmail());
         userVO.setPassword(user.getPassword());
         userVO.setRole(user.getRole());
         userVO.setCreatedBy(user.getCreatedBy());
@@ -290,8 +297,9 @@ public class UserDAOImpl implements UserDAO {
         public Object mapRow(final ResultSet resultSet, final int instance) throws SQLException {
             var user = new UserVO();
             user.setId(resultSet.getLong("id"));
-            user.setName(resultSet.getString("name"));
-            user.setLoginId(resultSet.getString("LogId"));
+            user.setFirstName(resultSet.getString("first_name"));
+            user.setLastName(resultSet.getString("last_name"));
+            user.setEmail(resultSet.getString("email"));
             user.setPassword(resultSet.getString("Pass"));
             user.setRole(resultSet.getString("role"));
             user.setCreatedBy(resultSet.getString("createdBy"));

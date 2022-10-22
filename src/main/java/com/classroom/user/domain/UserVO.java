@@ -5,8 +5,9 @@ import java.util.Date;
 @SuppressWarnings("unused")
 public class UserVO {
     private Long id;
-    private String name;
-    private String loginId;
+    private String firstName;
+    private String lastName;
+    private String email;
     private String password;
     private String role;
     private Date createdDate;
@@ -24,12 +25,28 @@ public class UserVO {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(final String name) {
-        this.name = name;
+    public void setFirstName(final String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(final String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(final String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -96,26 +113,15 @@ public class UserVO {
         this.includes = includes;
     }
 
-    public String getLoginId() {
-        return loginId;
-    }
-
-    public void setLoginId(final String loginId) {
-        this.loginId = loginId;
-    }
-
     @Override
     public String toString() {
         return "UserVO{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", loginId='" + loginId + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", role='" + role + '\'' +
-                ", createdDate=" + createdDate +
-                ", modifiedDate=" + modifiedDate +
-                ", createdBy='" + createdBy + '\'' +
-                ", lastModifiedBy='" + lastModifiedBy + '\'' +
                 '}';
     }
 }
