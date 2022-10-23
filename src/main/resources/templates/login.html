@@ -1,7 +1,6 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -19,7 +18,7 @@
         <!-- Core theme CSS (includes Bootstrap)-->
         <link rel="stylesheet" href="/css/bootstrap-5.min.css" />
         <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
-        <link href="${contextPath}/css/login.css" rel="stylesheet">
+        <link rel="stylesheet" href="/css/login.css" >
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-light fixed-top shadow-sm" id="mainNav">
@@ -31,8 +30,8 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ms-auto me-4 my-3 my-lg-0">
-                        <li class="nav-item"><a class="nav-link me-lg-3" href="${contextPath}/plans">Plans</a></li>
-                        <li class="nav-item"><a class="nav-link me-lg-3" href="${contextPath}/faq">FAQ</a></li>
+                        <li class="nav-item"><a class="nav-link me-lg-3" href="/plans">Plans</a></li>
+                        <li class="nav-item"><a class="nav-link me-lg-3" href="/faq">FAQ</a></li>
                     </ul>
                 </div>
             </div>
@@ -49,17 +48,17 @@
                                         <div class="text-center">
                                             <div class="h3 fw-light">Please Log In, or <a href="#">Sign Up</div>
                                         </div>
-                                        <form class="form" role="form" method="post" action="${contextPath}/login" accept-charset="UTF-8" id="login-nav">
+                                        <form class="form" role="form" method="post" th:action="@{/login}" accept-charset="UTF-8" id="login-nav">
                                             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                                             <!-- User name Input -->
                                             <div class="form-floating mb-3">
-                                                <input class="form-control" name="username" type="text" placeholder="Username" />
+                                                <input class="form-control" name="username" type="email" placeholder="example@company.com" autofocus="true" required="true" />
                                                 <label for="name">Username</label>
 
                                             </div>
                                             <!-- Email Input -->
                                             <div class="form-floating mb-3">
-                                                <input class="form-control" name="password" type="password" placeholder="password" />
+                                                <input class="form-control" name="password" type="password" placeholder="password" required="true"  />
                                                 <label for="password">password</label>
                                             </div>
                                             <!-- Submit button -->

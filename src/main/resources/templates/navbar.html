@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.thymeleaf.org ">
+<head>
+    <meta charset="UTF-8"/>
+</head>
+<body>
+    <div th:fragment="navbar" >
+        <nav class="navbar navbar-default navbar-expand-lg navbar-inverse">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/welcome">OpenClassRoom</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#demo-navbar" aria-controls="demo-navbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="demo-navbar">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item"><a class="nav-link" href="/plans">Plans</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/faq">FAQ</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <div th:if="${not #sets.isEmpty(#authentication.getPrincipal().getAuthorities())}">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome, ${#authentication.getPrincipal().getUsername()} <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/user/preferences"><i class="icon-cog"></i> Preferences</a></li>
+                                <li><a href="/help/support"><i class="icon-envelope"></i> Contact Support</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#" onclick="document.forms['logoutForm'].submit()"><i class="icon-off"></i> Logout</a></li>
+                            </ul>
+                            </div>>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <br />
+    </div>
+</body>
+</html>

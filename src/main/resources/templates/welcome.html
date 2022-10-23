@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security/">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Suraj">
+    <title>Welcome</title>
+    <style>
+        .center {text-align: center; margin-left: auto; margin-right: auto; margin-bottom: auto; margin-top: auto;}
+    </style>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/common.css" rel="stylesheet">
+    <link href="/css/font-awesome.min.css" rel="stylesheet">
+    <script type="text/javascript" src="/js/navbar-scripts.js"></script>
+</head>
+<body>
+    <div th:insert="navbar :: navbar"></div>
+    <div th:if="${not #sets.isEmpty(#authentication.getPrincipal().getAuthorities())}">
+        <form id="logoutForm" method="POST" action="${logout/}">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        </form>
+    </div>
+    <div class="jumbotron center">
+        <h1>Welcome to Open class room</h1>
+        <br />
+        <p>This is the home page of OpenClassRoom.</b></p>
+    </div>
+    <br />
+    <script src="/js/jquery-3.2.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function()
+        {
+            //Handles menu drop down
+            $('.dropdown-menu').find('form').click(function (e) {
+                e.stopPropagation();
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security/">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Plans</title>
+    <style>
+        .center {text-align: center; margin-left: auto; margin-right: auto; margin-bottom: auto; margin-top: auto;}
+    </style>
+</head>
+<body>
+    <div th:insert="navbar :: navbar"></div>
+    <div th:if="${not #sets.isEmpty(#authentication.getPrincipal().getAuthorities())}">
+        <form id="logoutForm" method="POST" action="${logout/}">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        </form>
+    </div>
+    <div class="jumbotron center">
+        <h1>Welcome to Open class room</h1>
+        <br />
+        <p>This is the plans page of OpenClassRoom.</b></p>
+    </div>
+    <br />
+</body>
+</html>
