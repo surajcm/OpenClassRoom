@@ -13,21 +13,34 @@
             background-position: 10px center;
             color: #D8000C;
             background-color: #FFBABA;
-            background-image: url( '/images/Error.png' );
+            background-image: url("/img/Error.png");
         }
     </style>
+    <script type="text/javascript" src="/js/navbar-scripts.js"></script>
 </head>
 <body>
-<form method="POST">
-    <input type="hidden" name="id" id="id" />
     <div th:insert="navbar :: navbar"></div>
-    <div id="content">
-        <div class="jumbotron center">
-            <div class="error">
-                <label> An error has been occurred while processing the page</label>
+    <form method="POST">
+        <input type="hidden" name="id" id="id" />
+        <div id="content">
+            <div class="jumbotron center">
+                <div class="error">
+                    <label> An error has been occurred while processing the page</label>
+                </div>
             </div>
         </div>
-    </div>
-</form>
+    </form>
+    <br />
+    <script src="/js/jquery-3.2.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function()
+        {
+            //Handles menu drop down
+            $('.dropdown-menu').find('form').click(function (e) {
+                e.stopPropagation();
+            });
+        });
+    </script>
 </body>
 </html>

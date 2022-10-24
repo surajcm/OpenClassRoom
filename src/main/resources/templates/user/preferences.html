@@ -7,6 +7,7 @@
     <style>
         .center {text-align: center; margin-left: auto; margin-right: auto; margin-bottom: auto; margin-top: auto;}
     </style>
+    <script type="text/javascript" src="/js/navbar-scripts.js"></script>
 </head>
 <body>
     <div th:insert="navbar :: navbar"></div>
@@ -21,5 +22,16 @@
         <p>This is the preferences page of OpenClassRoom.</b></p>
     </div>
     <br />
+    <script src="/js/jquery-3.2.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function()
+        {
+            //Handles menu drop down
+            $('.dropdown-menu').find('form').click(function (e) {
+                e.stopPropagation();
+            });
+        });
+    </script>
 </body>
 </html>

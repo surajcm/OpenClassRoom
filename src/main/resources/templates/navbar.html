@@ -20,7 +20,7 @@
                     <ul class="nav navbar-nav navbar-right">
                         <li class="dropdown">
                             <div th:if="${not #sets.isEmpty(#authentication.getPrincipal().getAuthorities())}">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome, ${#authentication.getPrincipal().getUsername()} <b class="caret"></b></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome, [[${#authentication.getPrincipal().getUsername()}]]</a>
                             <ul class="dropdown-menu">
                                 <li><a href="/user/preferences"><i class="icon-cog"></i> Preferences</a></li>
                                 <li><a href="/help/support"><i class="icon-envelope"></i> Contact Support</a></li>
