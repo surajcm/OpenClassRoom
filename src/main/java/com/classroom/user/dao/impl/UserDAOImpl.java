@@ -20,6 +20,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.classroom.user.exception.UserExceptionType.DATABASE_ERROR;
+import static com.classroom.user.exception.UserExceptionType.INCORRECT_PASSWORD;
+import static com.classroom.user.exception.UserExceptionType.UNKNOWN_USER;
+
 @Repository
 @SuppressWarnings("unused")
 public class UserDAOImpl implements UserDAO {
@@ -47,18 +51,18 @@ public class UserDAOImpl implements UserDAO {
             user = userRepository.findByEmail(userVO.getEmail());
         } catch (DataAccessException ex) {
             LOG.error(ex.getLocalizedMessage());
-            throw new UserException(UserException.DATABASE_ERROR);
+            throw new UserException(DATABASE_ERROR);
         }
 
         if (user != null) {
             LOG.info(" user details fetched successfully,for user name {}", user.getEmail());
             if (!userVO.getPassword().equalsIgnoreCase(user.getPassword())) {
-                throw new UserException(UserException.INCORRECT_PASSWORD);
+                throw new UserException(INCORRECT_PASSWORD);
             }
             LOG.info(" Password matched successfully, user details are {}", user);
         } else {
             // invalid user
-            throw new UserException(UserException.UNKNOWN_USER);
+            throw new UserException(UNKNOWN_USER);
         }
         return convertTOUserVO(user);
     }
@@ -76,7 +80,7 @@ public class UserDAOImpl implements UserDAO {
             var users = userRepository.findAll();
             userList = convertUsersToUserVOs(users);
         } catch (DataAccessException ex) {
-            throw new UserException(UserException.DATABASE_ERROR);
+            throw new UserException(DATABASE_ERROR);
         }
         return userList;
     }
@@ -108,7 +112,7 @@ public class UserDAOImpl implements UserDAO {
             save(user);
         } catch (DataAccessException ex) {
             ex.printStackTrace();
-            throw new UserException(UserException.DATABASE_ERROR);
+            throw new UserException(DATABASE_ERROR);
         }
     }
 
@@ -130,7 +134,7 @@ public class UserDAOImpl implements UserDAO {
             }
         } catch (DataAccessException ex) {
             LOG.error(ex.getLocalizedMessage());
-            throw new UserException(UserException.DATABASE_ERROR);
+            throw new UserException(DATABASE_ERROR);
         }
         return userVO;
     }
@@ -216,7 +220,7 @@ public class UserDAOImpl implements UserDAO {
             userRepository.save(user);
         } catch (DataAccessException ex) {
             LOG.error(ex.getLocalizedMessage());
-            throw new UserException(UserException.DATABASE_ERROR);
+            throw new UserException(DATABASE_ERROR);
         }
     }
 
@@ -255,7 +259,7 @@ public class UserDAOImpl implements UserDAO {
         try {
             userList = searchAllUsers(searchUser);
         } catch (DataAccessException ex) {
-            throw new UserException(UserException.DATABASE_ERROR);
+            throw new UserException(DATABASE_ERROR);
         }
         return userList;
     }
