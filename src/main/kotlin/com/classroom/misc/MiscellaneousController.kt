@@ -7,22 +7,22 @@ import org.springframework.web.bind.annotation.GetMapping
 
 @Controller
 class MiscellaneousController {
-    private val log = LogFactory.getLog(MiscellaneousController::class.java)
+    private val log = LogFactory.getLog(javaClass)
 
     @GetMapping("/plans")
-    fun welcome(model: Model?): String? {
+    fun welcome(): String {
         log.info("received incoming traffic and redirected to plans")
         return "misc/plans"
     }
 
     @GetMapping("/faq")
-    fun faq(model: Model?): String? {
+    fun faq(): String {
         log.info("received incoming traffic and redirected to faq")
         return "misc/faq"
     }
 
     @GetMapping("/help/support")
-    fun support(model: Model?): String? {
+    fun support(): String {
         log.info("received incoming traffic and redirected to support")
         return "misc/support"
     }

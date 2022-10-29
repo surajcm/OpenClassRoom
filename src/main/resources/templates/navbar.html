@@ -22,10 +22,10 @@
                             <div th:if="${not #sets.isEmpty(#authentication.getPrincipal().getAuthorities())}">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome, [[${#authentication.getPrincipal().getUsername()}]]</a>
                             <ul class="dropdown-menu">
-                                <li><a href="/user/preferences"><i class="icon-cog"></i> Preferences</a></li>
-                                <li><a href="/help/support"><i class="icon-envelope"></i> Contact Support</a></li>
+                                <li><a class="dropdown-item" href="/user/preferences"><i class="icon-cog"></i> Preferences</a></li>
+                                <li><a class="dropdown-item" href="/help/support"><i class="icon-envelope"></i> Contact Support</a></li>
                                 <li class="divider"></li>
-                                <li><a href="#" onclick="document.forms['logoutForm'].submit()"><i class="icon-off"></i> Logout</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="logMeOut();"><i class="icon-off"></i> Logout</a></li>
                             </ul>
                             </div>
                         </li>
