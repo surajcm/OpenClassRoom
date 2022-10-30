@@ -46,7 +46,7 @@
                                     <div class="col-sm-6 d-none d-sm-block bg-image"></div>
                                     <div class="col-sm-6 p-4">
                                         <div class="text-center">
-                                            <div class="h3 fw-light">Please Log In, or <a href="#">Sign Up</div>
+                                            <div class="h3 fw-light">Please Log In, or <a href="/" th:href="@{/registration}">Sign Up</a></div>
                                         </div>
                                         <form class="form" role="form" method="post" th:action="@{/login}" accept-charset="UTF-8" id="login-nav">
                                             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>

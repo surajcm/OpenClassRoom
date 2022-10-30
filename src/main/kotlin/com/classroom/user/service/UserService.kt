@@ -25,4 +25,6 @@ interface UserService {
 
     @Throws(UserException::class)
     fun searchUserDetails(searchUser: UserVO?): List<UserVO?>?
+
+    fun save(user: UserVO?): UserVO?
 }

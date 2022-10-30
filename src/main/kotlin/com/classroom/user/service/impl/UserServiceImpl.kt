@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class UserServiceImpl(private val userDAO: UserDAO): UserService {
-    private val MESSAGE = "Exception type in service impl: {} "
+    private val message = "Exception type in service impl: {} "
 
     private val log = LogFactory.getLog(javaClass)
 
@@ -35,7 +35,7 @@ class UserServiceImpl(private val userDAO: UserDAO): UserService {
         try {
             userList = userDAO.getAllUserDetails()
         } catch (ex: UserException) {
-            log.error(MESSAGE, ex.cause)
+            log.error(message, ex.cause)
             throw UserException(ex.exceptionType!!)
         } catch (e1: Exception) {
             e1.printStackTrace()
@@ -48,7 +48,7 @@ class UserServiceImpl(private val userDAO: UserDAO): UserService {
         try {
             userDAO.addNewUser(user!!)
         } catch (ex: UserException) {
-            log.error(MESSAGE, ex.cause)
+            log.error(message, ex.cause)
             throw UserException(ex.exceptionType!!)
         } catch (e1: Exception) {
             e1.printStackTrace()
@@ -61,7 +61,7 @@ class UserServiceImpl(private val userDAO: UserDAO): UserService {
         try {
             userVO = userDAO.getUserDetailsFromID(id!!)
         } catch (ex: UserException) {
-            log.error(MESSAGE, ex.cause)
+            log.error(message, ex.cause)
             throw UserException(ex.exceptionType!!)
         } catch (e1: Exception) {
             e1.printStackTrace()
@@ -74,7 +74,7 @@ class UserServiceImpl(private val userDAO: UserDAO): UserService {
         try {
             userDAO.updateUser(user!!)
         } catch (ex: UserException) {
-            log.error(MESSAGE, ex.cause)
+            log.error(message, ex.cause)
             throw UserException(ex.exceptionType!!)
         } catch (e1: Exception) {
             e1.printStackTrace()
@@ -86,7 +86,7 @@ class UserServiceImpl(private val userDAO: UserDAO): UserService {
         try {
             userDAO.deleteUser(id!!)
         } catch (ex: UserException) {
-            log.error(MESSAGE, ex.cause)
+            log.error(message, ex.cause)
             throw UserException(ex.exceptionType!!)
         } catch (e1: Exception) {
             e1.printStackTrace()
@@ -99,11 +99,25 @@ class UserServiceImpl(private val userDAO: UserDAO): UserService {
         try {
             userList = userDAO.searchUserDetails(searchUser!!)
         } catch (ex: UserException) {
-            log.error(MESSAGE, ex.cause)
+            log.error(message, ex.cause)
             throw UserException(ex.exceptionType!!)
         } catch (e1: Exception) {
             e1.printStackTrace()
         }
         return userList
     }
+
+    override fun save(user: UserVO?): UserVO? {
+        var userVO : UserVO? = null
+        try {
+            userVO = userDAO.save(user)
+        } catch (ex: UserException) {
+            log.error(message, ex.cause)
+            throw UserException(ex.exceptionType!!)
+        } catch (e1: Exception) {
+            e1.printStackTrace()
+        }
+        return userVO
+    }
+
 }

@@ -6,7 +6,7 @@ import com.classroom.user.exception.UserException
 interface UserDAO {
 
     @Throws(UserException::class)
-    fun logIn(user: UserVO): UserVO?
+    fun logIn(userVO: UserVO): UserVO?
 
     @Throws(UserException::class)
     fun getAllUserDetails(): List<UserVO?>?
@@ -18,7 +18,7 @@ interface UserDAO {
     fun getUserDetailsFromID(id: Long): UserVO?
 
     @Throws(UserException::class)
-    fun updateUser(user: UserVO)
+    fun updateUser(userVO: UserVO)
 
     @Throws(UserException::class)
     fun deleteUser(id: Long)
@@ -27,4 +27,6 @@ interface UserDAO {
     fun searchUserDetails(searchUser: UserVO): List<UserVO?>?
 
     fun findByEmail(email: String): UserVO?
+
+    fun save(user: UserVO?): UserVO?
 }

@@ -10,11 +10,8 @@ import com.classroom.user.exception.UserExceptionType.UNKNOWN_USER
 import org.hibernate.Session
 import org.slf4j.LoggerFactory
 import org.springframework.dao.DataAccessException
-import org.springframework.jdbc.core.RowMapper
 import org.springframework.stereotype.Repository
 import org.springframework.util.StringUtils
-import java.sql.ResultSet
-import java.sql.SQLException
 import java.util.function.Consumer
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
@@ -28,13 +25,6 @@ open class UserDAOImpl(private val userRepository: UserRepository): UserDAO {
     @PersistenceContext
     private val em: EntityManager? = null
 
-    /**
-     * LOG in.
-     *
-     * @param user userVO
-     * @return user instance from database
-     * @throws UserException on error
-     */
     @Throws(UserException::class)
     override fun logIn(userVO: UserVO): UserVO? {
         logger.info("At login, User vo is {}", userVO)
@@ -185,8 +175,7 @@ open class UserDAOImpl(private val userRepository: UserRepository): UserDAO {
         startsWith: Boolean,
         field: String
     ): String {
-        val pattern: String
-        pattern = if (includes) {
+        val pattern: String = if (includes) {
             "%$field%"
         } else if (startsWith) {
             "$field%"
@@ -203,7 +192,7 @@ open class UserDAOImpl(private val userRepository: UserRepository): UserDAO {
      */
     override fun updateUser(userVO: UserVO) {
         if (userVO.id != null) {
-            var user :User =  userRepository.getReferenceById(userVO.id!!)
+            val user :User =  userRepository.getReferenceById(userVO.id!!)
             user.firstName = userVO.firstName
             user.lastName = userVO.lastName
             user.email = userVO.email
@@ -262,8 +251,7 @@ open class UserDAOImpl(private val userRepository: UserRepository): UserDAO {
      */
     @Throws(UserException::class)
     override fun searchUserDetails(searchUser: UserVO): List<UserVO>? {
-        val userList: List<UserVO>
-        userList = try {
+        val userList: List<UserVO> = try {
             searchAllUsers(searchUser)
         } catch (ex: DataAccessException) {
             throw UserException(DATABASE_ERROR)
@@ -278,6 +266,12 @@ open class UserDAOImpl(private val userRepository: UserRepository): UserDAO {
         return user?.let { convertTOUserVO(it) }
     }
 
+    override fun save(user: UserVO?): UserVO? {
+        val userEntity = user?.let { convertToUser(it) }
+        val savedEntity = userEntity?.let { userRepository.save(it) }
+        return savedEntity?.let { convertTOUserVO(it) }
+    }
+
     private fun convertTOUserVO(user: User): UserVO? {
         val userVO = UserVO()
         userVO.id = user.userId
@@ -289,34 +283,5 @@ open class UserDAOImpl(private val userRepository: UserRepository): UserDAO {
         userVO.createdBy = user.createdBy
         userVO.lastModifiedBy = user.modifiedBy
         return userVO
-    }
-
-    /**
-     * Row mapper as inner class.
-     */
-    private class UserRowMapper : RowMapper<Any?> {
-        /**
-         * method to map the result to vo.
-         *
-         * @param resultSet resultSet instance
-         * @param instance         i instance
-         * @return UserVO as Object
-         * @throws SQLException on error
-         */
-        @Throws(SQLException::class)
-        override fun mapRow(resultSet: ResultSet, instance: Int): Any? {
-            val user = UserVO()
-            user.id = resultSet.getLong("id")
-            user.firstName = resultSet.getString("first_name")
-            user.lastName = resultSet.getString("last_name")
-            user.email = resultSet.getString("email")
-            user.password = resultSet.getString("Pass")
-            user.role = resultSet.getString("role")
-            user.createdBy = resultSet.getString("createdBy")
-            user.createdDate = resultSet.getDate("createdOn")
-            user.lastModifiedBy = resultSet.getString("modifiedBy")
-            user.modifiedDate = resultSet.getDate("modifiedOn")
-            return user
-        }
     }
 }
