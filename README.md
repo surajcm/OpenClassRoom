@@ -5,8 +5,8 @@ OpenClassRoom is an online classroom, where you can register either as a student
 
 Technologies used
 ----
-1)    JDK 18
-2)    HSQL in-memory db
+1)    JDK 21
+2)    H2 in-memory db
 3)    Springboot
 
 Steps for testing / installing the Application

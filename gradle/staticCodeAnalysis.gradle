@@ -4,7 +4,7 @@ apply plugin: 'jacoco'
 //apply plugin: 'com.github.spotbugs'
 
 checkstyle {
-    toolVersion = '8.42'
+    toolVersion = '10.12.7'
     ignoreFailures = false
     maxWarnings = 0
     checkstyleMain {
@@ -22,7 +22,7 @@ checkstyle {
 //}
 
 pmd {
-    toolVersion = '6.21.0'
+    toolVersion = '6.55.0'
     ignoreFailures = false
     ruleSetFiles = files("config/pmd/ruleset.xml")
     ruleSets = []
@@ -31,7 +31,7 @@ pmd {
 }
 
 jacoco {
-    toolVersion = "0.8.7+"
+    toolVersion = "0.8.11"
     reportsDirectory = file("build/reports/jacoco/")
 }
 
@@ -55,20 +55,6 @@ tasks.withType(Pmd) {
         html.required = true
     }
 }
-cpd {
-    toolVersion = '6.21.0'
-    minimumTokenCount = 40
-    ignoreFailures = true
-}
-
-cpdCheck {
-    reports {
-        text.required = true
-        xml.required = false
-    }
-    source = sourceSets.main.allJava
-}
-
 
 check.dependsOn jacocoTestCoverageVerification
 

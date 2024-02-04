@@ -17,9 +17,9 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.14.RELEASE'
     id 'net.ltgt.errorprone' version '2.0.2'
     id 'com.github.spotbugs' version '1.6.8' apply false
-    id 'de.aaschmid.cpd' version '3.1'
+    id 'de.aaschmid.cpd' version '3.1' apply false
     id "org.sonarqube" version "3.4.0.2513"
-    id 'org.jetbrains.kotlin.jvm' version '1.7.20'
+    id "org.jetbrains.kotlin.jvm" version "2.0.0-Beta3"
 }
 
 group = 'com.classroom'
@@ -40,7 +40,7 @@ test.dependsOn checkstyleMain
 test.dependsOn checkstyleTest
 bootRun.dependsOn checkstyleMain
 
-check.dependsOn(cpdCheck, pmdMain)
+check.dependsOn(pmdMain)
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
