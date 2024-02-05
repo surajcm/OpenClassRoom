@@ -1,5 +1,5 @@
 dependencies {
-    errorprone("com.google.errorprone:error_prone_core:2.15.0")
+    errorprone("com.google.errorprone:error_prone_core:2.24.1")
     errorproneJavac('com.google.errorprone:javac:9+181-r4173-1')
 
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -12,9 +12,8 @@ dependencies {
 
     implementation("com.h2database:h2:2.1.214")
     implementation("org.apache.tomcat.embed:tomcat-embed-jasper")
-    implementation("jstl:jstl:1.2")
-    implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity5")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.1.51")
+    implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.22")
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'junit', module: 'junit'

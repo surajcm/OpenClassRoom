@@ -1,29 +1,26 @@
 package com.classroom.user.dao.impl
 
+import com.classroom.init.specs.SearchCriteria
+import com.classroom.init.specs.SearchOperation
 import com.classroom.user.dao.UserDAO
 import com.classroom.user.dao.impl.entities.User
+import com.classroom.user.dao.spec.UserSpecification
 import com.classroom.user.domain.UserVO
 import com.classroom.user.exception.UserException
 import com.classroom.user.exception.UserExceptionType.DATABASE_ERROR
 import com.classroom.user.exception.UserExceptionType.INCORRECT_PASSWORD
 import com.classroom.user.exception.UserExceptionType.UNKNOWN_USER
-import org.hibernate.Session
 import org.slf4j.LoggerFactory
 import org.springframework.dao.DataAccessException
 import org.springframework.stereotype.Repository
 import org.springframework.util.StringUtils
 import java.util.function.Consumer
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
+
 
 @Repository
 @SuppressWarnings("unused")
 open class UserDAOImpl(private val userRepository: UserRepository): UserDAO {
     private val logger = LoggerFactory.getLogger(javaClass)
-
-
-    @PersistenceContext
-    private val em: EntityManager? = null
 
     @Throws(UserException::class)
     override fun logIn(userVO: UserVO): UserVO? {
@@ -129,60 +126,34 @@ open class UserDAOImpl(private val userRepository: UserRepository): UserDAO {
      */
     @Throws(DataAccessException::class)
     fun searchAllUsers(searchUser: UserVO): List<UserVO> {
-        val builder = em!!.unwrap(Session::class.java).criteriaBuilder
-        val criteria = builder.createQuery(
-            User::class.java
-        )
-        val userRoot = criteria.from(
-            User::class.java
-        )
-        criteria.select(userRoot)
+
+        val userSpec = UserSpecification()
+        val search: SearchOperation = populateSearchOperation(searchUser.startsWith, searchUser.includes)
         if (StringUtils.hasText(searchUser.firstName)) {
-            val pattern = searchUser.firstName?.let {
-                searchPattern(
-                    searchUser.includes, searchUser.startsWith,
-                    it
-                )
-            }
-            criteria.where(builder.like(userRoot.get("first_name"), pattern))
+            userSpec.add(SearchCriteria("first_name", searchUser.firstName, search))
         }
         if (StringUtils.hasText(searchUser.email)) {
-            val pattern = searchUser.email?.let {
-                searchPattern(
-                    searchUser.includes, searchUser.startsWith,
-                    it
-                )
-            }
-            criteria.where(builder.like(userRoot.get("email"), pattern))
+            userSpec.add(SearchCriteria("email", searchUser.email, search))
         }
         if (StringUtils.hasText(searchUser.role)) {
-            val pattern = searchUser.role?.let {
-                searchPattern(
-                    searchUser.includes, searchUser.startsWith,
-                    it
-                )
-            }
-            criteria.where(builder.equal(userRoot.get<Any>("role"), pattern))
+            userSpec.add(SearchCriteria("role", searchUser.role, search))
         }
-        val resultUsers = em.unwrap(
-            Session::class.java
-        ).createQuery(criteria).resultList
-        return convertUsersToUserVOs(resultUsers)
+        val vos = userRepository.findAll(userSpec)
+        return convertUsersToUserVOs(vos)
     }
 
-    private fun searchPattern(
-        includes: Boolean,
+    private fun populateSearchOperation(
         startsWith: Boolean,
-        field: String
-    ): String {
-        val pattern: String = if (includes) {
-            "%$field%"
+        includes: Boolean
+    ): SearchOperation {
+        val searchOperation = if (includes) {
+            SearchOperation.MATCH
         } else if (startsWith) {
-            "$field%"
+            SearchOperation.MATCH_START
         } else {
-            field
+            SearchOperation.EQUAL
         }
-        return pattern
+        return searchOperation
     }
 
     /**

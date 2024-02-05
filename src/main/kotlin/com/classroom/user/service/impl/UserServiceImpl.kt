@@ -5,11 +5,14 @@ import com.classroom.user.domain.UserVO
 import com.classroom.user.exception.UserException
 import com.classroom.user.service.UserService
 import org.apache.commons.logging.LogFactory
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
+
 
 @Service
 class UserServiceImpl(private val userDAO: UserDAO): UserService {
     private val message = "Exception type in service impl: {} "
+    private val bcryptPasswordEncoder: BCryptPasswordEncoder = BCryptPasswordEncoder()
 
     private val log = LogFactory.getLog(javaClass)
 
@@ -110,6 +113,9 @@ class UserServiceImpl(private val userDAO: UserDAO): UserService {
     override fun save(user: UserVO?): UserVO? {
         var userVO : UserVO? = null
         try {
+            if (user != null) {
+                user.password = bcryptPasswordEncoder.encode(user.password)
+            }
             userVO = userDAO.save(user)
         } catch (ex: UserException) {
             log.error(message, ex.cause)

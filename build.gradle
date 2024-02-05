@@ -13,12 +13,12 @@ buildscript {
 plugins {
     id 'java'
     id 'idea'
-    id 'org.springframework.boot' version '2.7.5'
-    id 'io.spring.dependency-management' version '1.0.14.RELEASE'
-    id 'net.ltgt.errorprone' version '2.0.2'
+    id "org.springframework.boot" version "3.2.2"
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'net.ltgt.errorprone' version '3.1.0'
     id 'com.github.spotbugs' version '1.6.8' apply false
-    id 'de.aaschmid.cpd' version '3.1' apply false
-    id "org.sonarqube" version "3.4.0.2513"
+    id 'de.aaschmid.cpd' version '3.3' apply false
+    id "org.sonarqube" version "4.4.1.3373"
     id "org.jetbrains.kotlin.jvm" version "2.0.0-Beta3"
 }
 
