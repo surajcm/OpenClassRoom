@@ -1,5 +1,6 @@
 package com.classroom.user.domain
 
+import com.classroom.user.dao.impl.entities.Role
 import java.util.*
 
 class UserVO {
@@ -8,7 +9,8 @@ class UserVO {
     var lastName: String? = null
     var email: String? = null
     var password: String? = null
-    var role: String? = null
+    var roles: MutableSet<Role> = HashSet()
+    var enabled: Boolean? = null
     var createdDate: Date? = null
     var modifiedDate: Date? = null
     var createdBy: String? = null
@@ -23,7 +25,7 @@ class UserVO {
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", role='" + role + '\'' +
+                ", roles='" + roles + '\'' +
                 '}'
     }
 }

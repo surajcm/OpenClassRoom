@@ -1,5 +1,6 @@
 package com.classroom.user.web
 
+import com.classroom.user.service.impl.UserServiceImpl
 import jakarta.servlet.http.HttpServletRequest
 import org.apache.commons.logging.LogFactory
 import org.springframework.security.core.context.SecurityContextHolder
@@ -9,7 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping
 
 
 @Controller
-class UserController {
+class UserController(
+    private val userService: UserServiceImpl
+) {
     /**
      * logger for user controller.
      */
@@ -44,5 +47,12 @@ class UserController {
         SecurityContextHolder.clearContext()
         request.getSession(false)?.invalidate()
         return "login"
+    }
+
+    @GetMapping("/users")
+    fun listAll(model: Model): String {
+        log.info("received incoming traffic and redirected to users")
+        model.addAttribute("users", userService.getAllUserDetails())
+        return "user/users"
     }
 }

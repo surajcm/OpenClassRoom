@@ -8,8 +8,6 @@ import com.classroom.user.dao.spec.UserSpecification
 import com.classroom.user.domain.UserVO
 import com.classroom.user.exception.UserException
 import com.classroom.user.exception.UserExceptionType.DATABASE_ERROR
-import com.classroom.user.exception.UserExceptionType.INCORRECT_PASSWORD
-import com.classroom.user.exception.UserExceptionType.UNKNOWN_USER
 import org.slf4j.LoggerFactory
 import org.springframework.dao.DataAccessException
 import org.springframework.stereotype.Repository
@@ -23,98 +21,23 @@ open class UserDAOImpl(private val userRepository: UserRepository): UserDAO {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @Throws(UserException::class)
-    override fun logIn(userVO: UserVO): UserVO? {
-        logger.info("At login, User vo is {}", userVO)
-        val user: User? = try {
-            userRepository.findByEmail(userVO.email)
-        } catch (ex: DataAccessException) {
-            logger.error(ex.localizedMessage)
-            throw UserException(DATABASE_ERROR)
-        }
-        if (user != null) {
-            logger.info(" user details fetched successfully,for user name {}", user.email)
-            if (!user.password.equals(user.password, ignoreCase = true)) {
-                throw UserException(INCORRECT_PASSWORD)
-            }
-            logger.info(" Password matched successfully, user details are {}", user)
-        } else {
-            // invalid user
-            throw UserException(UNKNOWN_USER)
-        }
-        return convertTOUserVO(user)
-    }
-
-    /**
-     * getAllUserDetails to list all user details.
-     *
-     * @return List of user
-     * @throws UserException on db error
-     */
-    @Throws(UserException::class)
-    override fun getAllUserDetails(): List<UserVO>? {
-        val userList: List<UserVO> = try {
-            val users = userRepository.findAll()
-            convertUsersToUserVOs(users)
+    override fun getAllUserDetails(): List<User> {
+        val userList: List<User> = try {
+            userRepository.findAll()
         } catch (ex: DataAccessException) {
             throw UserException(DATABASE_ERROR)
         }
         return userList
     }
 
-    private fun convertUsersToUserVOs(users: List<User>): List<UserVO> {
-        val userVOS: MutableList<UserVO> = ArrayList()
-        users.forEach(Consumer { user: User ->
-            val userVO = UserVO()
-            userVO.id = user.userId
-            userVO.firstName = user.firstName
-            userVO.email = user.email
-            userVO.password = user.password
-            userVO.role = user.role
-            userVO.createdBy = user.createdBy
-            userVO.lastModifiedBy = user.modifiedBy
-            userVOS.add(userVO)
-        })
-        return userVOS
-    }
-
-    /**
-     * addNewUser to add a new user.
-     *
-     * @param user user
-     * @throws UserException on error
-     */
     @Throws(UserException::class)
-    override fun addNewUser(user: UserVO) {
+    override fun addNewUser(user: User) {
         try {
-            save(user)
+            userRepository.save(user)
         } catch (ex: DataAccessException) {
             ex.printStackTrace()
             throw UserException(DATABASE_ERROR)
         }
-    }
-
-    /**
-     * getUserDetailsFromID to get the single user details from its id.
-     *
-     * @param id id
-     * @return UserVO
-     * @throws UserException on error
-     */
-    @Throws(UserException::class)
-    override fun getUserDetailsFromID(id: Long): UserVO? {
-        logger.info("At getUserDetailsFromID")
-        var userVO: UserVO? = null
-        try {
-            val optionalUser = userRepository.findById(id)
-            if (optionalUser.isPresent) {
-                val user = optionalUser.get()
-                userVO = convertTOUserVO(user)
-            }
-        } catch (ex: DataAccessException) {
-            logger.error(ex.localizedMessage)
-            throw UserException(DATABASE_ERROR)
-        }
-        return userVO
     }
 
     /**
@@ -125,21 +48,36 @@ open class UserDAOImpl(private val userRepository: UserRepository): UserDAO {
      * @throws DataAccessException on error
      */
     @Throws(DataAccessException::class)
-    fun searchAllUsers(searchUser: UserVO): List<UserVO> {
-
+    fun searchAllUsers(searchUser: User, startsWith: Boolean , includes: Boolean): List<User> {
         val userSpec = UserSpecification()
-        val search: SearchOperation = populateSearchOperation(searchUser.startsWith, searchUser.includes)
+        val search: SearchOperation = populateSearchOperation(startsWith, includes)
         if (StringUtils.hasText(searchUser.firstName)) {
             userSpec.add(SearchCriteria("first_name", searchUser.firstName, search))
         }
         if (StringUtils.hasText(searchUser.email)) {
             userSpec.add(SearchCriteria("email", searchUser.email, search))
         }
-        if (StringUtils.hasText(searchUser.role)) {
-            userSpec.add(SearchCriteria("role", searchUser.role, search))
+        if (StringUtils.hasText(searchUser.roles.toString())) {
+            userSpec.add(SearchCriteria("roles", searchUser.roles.toString(), search))
         }
-        val vos = userRepository.findAll(userSpec)
-        return convertUsersToUserVOs(vos)
+        return userRepository.findAll(userSpec)
+    }
+
+    private fun convertUsersToUserVOs(users: List<User>): List<UserVO> {
+        val userVOS: MutableList<UserVO> = ArrayList()
+        users.forEach(Consumer { user: User ->
+            val userVO = UserVO()
+            userVO.id = user.id
+            userVO.firstName = user.firstName
+            userVO.email = user.email
+            userVO.password = user.password
+            userVO.roles = user.roles
+            userVO.enabled = user.enabled
+            userVO.createdBy = user.createdBy
+            userVO.lastModifiedBy = user.modifiedBy
+            userVOS.add(userVO)
+        })
+        return userVOS
     }
 
     private fun populateSearchOperation(
@@ -156,6 +94,7 @@ open class UserDAOImpl(private val userRepository: UserRepository): UserDAO {
         return searchOperation
     }
 
+
     /**
      * updateUser.
      *
@@ -168,26 +107,9 @@ open class UserDAOImpl(private val userRepository: UserRepository): UserDAO {
             user.lastName = userVO.lastName
             user.email = userVO.email
             user.password = userVO.password
-            user.role = userVO.role
+            user.roles = userVO.roles
+            user.enabled = userVO.enabled
             user.modifiedBy = userVO.lastModifiedBy
-        }
-    }
-
-
-    /**
-     * save to add a new user.
-     *
-     * @param userVO user
-     * @throws UserException on error
-     */
-    @Throws(UserException::class)
-    fun save(userVO: UserVO) {
-        val user = convertToUser(userVO)
-        try {
-            userRepository.save(user)
-        } catch (ex: DataAccessException) {
-            logger.error(ex.localizedMessage)
-            throw UserException(DATABASE_ERROR)
         }
     }
 
@@ -197,7 +119,8 @@ open class UserDAOImpl(private val userRepository: UserRepository): UserDAO {
         user.lastName = userVO.lastName
         user.email = userVO.email
         user.password = userVO.password
-        user.role = userVO.role
+        user.roles = userVO.roles
+        user.enabled = userVO.enabled
         user.createdBy = userVO.createdBy
         user.modifiedBy = userVO.lastModifiedBy
         return user
@@ -221,38 +144,25 @@ open class UserDAOImpl(private val userRepository: UserRepository): UserDAO {
      * @throws UserException on error
      */
     @Throws(UserException::class)
-    override fun searchUserDetails(searchUser: UserVO): List<UserVO>? {
-        val userList: List<UserVO> = try {
-            searchAllUsers(searchUser)
+    override fun searchUserDetails(searchUser: User, startsWith: Boolean , includes: Boolean): List<User>? {
+        val userList: List<User> = try {
+            searchAllUsers(searchUser, startsWith, includes)
         } catch (ex: DataAccessException) {
             throw UserException(DATABASE_ERROR)
         }
         return userList
     }
 
-    override fun findByEmail(email: String): UserVO? {
+    override fun findByEmail(email: String): User? {
         logger.info(" at findByUsername")
         val user = userRepository.findByEmail(email)
         logger.info("user is {}", user)
-        return user?.let { convertTOUserVO(it) }
+        return user
     }
 
-    override fun save(user: UserVO?): UserVO? {
-        val userEntity = user?.let { convertToUser(it) }
-        val savedEntity = userEntity?.let { userRepository.save(it) }
-        return savedEntity?.let { convertTOUserVO(it) }
+    override fun save(user: User?): User? {
+        return user?.let { userRepository.save(it) }
     }
 
-    private fun convertTOUserVO(user: User): UserVO? {
-        val userVO = UserVO()
-        userVO.id = user.userId
-        userVO.firstName = user.firstName
-        userVO.lastName = user.lastName
-        userVO.email = user.email
-        userVO.password = user.password
-        userVO.role = user.role
-        userVO.createdBy = user.createdBy
-        userVO.lastModifiedBy = user.modifiedBy
-        return userVO
-    }
+
 }

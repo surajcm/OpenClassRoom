@@ -1,30 +1,22 @@
 package com.classroom.user.service
 
+import com.classroom.user.dao.impl.entities.User
 import com.classroom.user.domain.UserVO
 import com.classroom.user.exception.UserException
 
 interface UserService {
 
     @Throws(UserException::class)
-    fun logIn(user: UserVO?): UserVO?
+    fun getAllUserDetails(): List<User>?
 
     @Throws(UserException::class)
-    fun getAllUserDetails(): List<UserVO?>?
-
-    @Throws(UserException::class)
-    fun addNewUser(user: UserVO?)
-
-    @Throws(UserException::class)
-    fun getUserDetailsFromID(id: Long?): UserVO?
-
-    @Throws(UserException::class)
-    fun updateUser(user: UserVO?)
+    fun addNewUser(user: User?)
 
     @Throws(UserException::class)
     fun deleteUser(id: Long?)
 
     @Throws(UserException::class)
-    fun searchUserDetails(searchUser: UserVO?): List<UserVO?>?
+    fun searchUserDetails(searchUser: User?, startsWith: Boolean , includes: Boolean): List<User?>?
 
-    fun save(user: UserVO?): UserVO?
+    fun save(user: User?): User?
 }

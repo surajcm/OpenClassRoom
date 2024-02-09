@@ -1,5 +1,6 @@
 package com.classroom.user.web
 
+import com.classroom.user.dao.impl.entities.User
 import com.classroom.user.domain.UserVO
 import com.classroom.user.service.UserService
 import org.springframework.stereotype.Controller
@@ -11,10 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 @Controller
 @RequestMapping("/registration")
 class RegistrationController(private val userService: UserService) {
-    @ModelAttribute("userVO")
-    fun userVO(): UserVO {
-        return UserVO()
-    }
 
     @GetMapping
     fun showRegistrationForm(): String {
@@ -22,7 +19,7 @@ class RegistrationController(private val userService: UserService) {
     }
 
     @PostMapping
-    fun registerUserAccount(@ModelAttribute("user") user: UserVO?): String {
+    fun registerUserAccount(@ModelAttribute("user") user: User?): String {
         userService.save(user)
         return "redirect:/registration?success"
     }

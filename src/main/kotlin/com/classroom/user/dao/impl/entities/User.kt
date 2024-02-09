@@ -11,22 +11,25 @@ class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    var userId: Long? = null
+    var id: Long? = null
 
-    @Column(name = "first_name")
+    @Column(name = "first_name", length = 45, nullable = false)
     var firstName: String? = null
 
-    @Column(name = "last_name")
+    @Column(name = "last_name", length = 45, nullable = false)
     var lastName: String? = null
 
-    @Column(name = "email")
+    @Column(name = "email", length = 128, nullable = false, unique = true)
     var email: String? = null
 
-    @Column(name = "password")
+    @Column(name = "password", length = 64, nullable = false)
     var password: String? = null
 
-    @Column(name = "role")
-    var role: String? = null
+    @Column(length = 64)
+    var photo: String? = null
+
+    @Column(name = "enabled")
+    var enabled: Boolean? = null
 
     @Column(name = "createdOn")
     var createdOn: OffsetDateTime? = null
@@ -40,13 +43,20 @@ class User {
     @Column(name = "modifiedBy")
     var modifiedBy: String? = null
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "users_roles",
+        joinColumns = [JoinColumn(name = "user_id")],
+        inverseJoinColumns = [JoinColumn(name = "role_id")]
+    )
+    var roles: MutableSet<Role> = HashSet()
     /**
      * initialize/update dates.
      */
     @PrePersist
     @PreUpdate
     fun initializeDate() {
-        if (this.userId == null) {
+        if (this.id == null) {
             createdOn = OffsetDateTime.now(ZoneId.systemDefault())
         }
         modifiedOn = OffsetDateTime.now(ZoneId.systemDefault())
