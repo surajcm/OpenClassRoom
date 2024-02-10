@@ -1,7 +1,6 @@
 package com.classroom.user.dao
 
 import com.classroom.user.dao.impl.entities.User
-import com.classroom.user.domain.UserVO
 import com.classroom.user.exception.UserException
 
 interface UserDAO {
@@ -13,7 +12,7 @@ interface UserDAO {
     fun addNewUser(user: User)
 
     @Throws(UserException::class)
-    fun updateUser(userVO: UserVO)
+    fun updateUser(user: User)
 
     @Throws(UserException::class)
     fun deleteUser(id: Long)

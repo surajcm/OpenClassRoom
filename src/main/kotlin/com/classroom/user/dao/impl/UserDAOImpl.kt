@@ -5,15 +5,12 @@ import com.classroom.init.specs.SearchOperation
 import com.classroom.user.dao.UserDAO
 import com.classroom.user.dao.impl.entities.User
 import com.classroom.user.dao.spec.UserSpecification
-import com.classroom.user.domain.UserVO
 import com.classroom.user.exception.UserException
 import com.classroom.user.exception.UserExceptionType.DATABASE_ERROR
 import org.slf4j.LoggerFactory
 import org.springframework.dao.DataAccessException
 import org.springframework.stereotype.Repository
 import org.springframework.util.StringUtils
-import java.util.function.Consumer
-
 
 @Repository
 @SuppressWarnings("unused")
@@ -63,23 +60,6 @@ open class UserDAOImpl(private val userRepository: UserRepository): UserDAO {
         return userRepository.findAll(userSpec)
     }
 
-    private fun convertUsersToUserVOs(users: List<User>): List<UserVO> {
-        val userVOS: MutableList<UserVO> = ArrayList()
-        users.forEach(Consumer { user: User ->
-            val userVO = UserVO()
-            userVO.id = user.id
-            userVO.firstName = user.firstName
-            userVO.email = user.email
-            userVO.password = user.password
-            userVO.roles = user.roles
-            userVO.enabled = user.enabled
-            userVO.createdBy = user.createdBy
-            userVO.lastModifiedBy = user.modifiedBy
-            userVOS.add(userVO)
-        })
-        return userVOS
-    }
-
     private fun populateSearchOperation(
         startsWith: Boolean,
         includes: Boolean
@@ -100,30 +80,17 @@ open class UserDAOImpl(private val userRepository: UserRepository): UserDAO {
      *
      * @param userVO user
      */
-    override fun updateUser(userVO: UserVO) {
-        if (userVO.id != null) {
-            val user :User =  userRepository.getReferenceById(userVO.id!!)
-            user.firstName = userVO.firstName
-            user.lastName = userVO.lastName
-            user.email = userVO.email
-            user.password = userVO.password
-            user.roles = userVO.roles
-            user.enabled = userVO.enabled
-            user.modifiedBy = userVO.lastModifiedBy
+    override fun updateUser(user: User) {
+        if (user.id != null) {
+            val updatedUser :User =  userRepository.getReferenceById(user.id!!)
+            updatedUser.firstName = user.firstName
+            updatedUser.lastName = user.lastName
+            updatedUser.email = user.email
+            updatedUser.password = user.password
+            updatedUser.roles = user.roles
+            updatedUser.enabled = user.enabled
+            updatedUser.modifiedBy = user.modifiedBy
         }
-    }
-
-    private fun convertToUser(userVO: UserVO): User {
-        val user = User()
-        user.firstName = userVO.firstName
-        user.lastName = userVO.lastName
-        user.email = userVO.email
-        user.password = userVO.password
-        user.roles = userVO.roles
-        user.enabled = userVO.enabled
-        user.createdBy = userVO.createdBy
-        user.modifiedBy = userVO.lastModifiedBy
-        return user
     }
 
 

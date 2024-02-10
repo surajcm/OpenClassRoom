@@ -15,4 +15,8 @@ class Role {
 
     @Column(name = "description", length = 150, nullable = false)
     var description: String? = null
+
+    override fun toString(): String {
+        return name!!
+    }
 }

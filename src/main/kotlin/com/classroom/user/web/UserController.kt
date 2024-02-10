@@ -55,4 +55,10 @@ class UserController(
         model.addAttribute("users", userService.getAllUserDetails())
         return "user/users"
     }
+
+    @GetMapping("/users/new")
+    fun newUser(): String {
+        log.info("received incoming traffic and redirected to new user")
+        return "user/user_form"
+    }
 }

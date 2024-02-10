@@ -2,14 +2,11 @@ package com.classroom.user.service.impl
 
 import com.classroom.user.dao.UserDAO
 import com.classroom.user.dao.impl.entities.User
-import com.classroom.user.domain.UserVO
 import com.classroom.user.exception.UserException
 import com.classroom.user.service.UserService
 import org.apache.commons.logging.LogFactory
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
-import java.util.function.Consumer
-
 
 @Service
 class UserServiceImpl(private val userDAO: UserDAO): UserService {
@@ -32,22 +29,6 @@ class UserServiceImpl(private val userDAO: UserDAO): UserService {
         return userList
     }
 
-    private fun convertUsersToUserVOs(users: List<User>): List<UserVO> {
-        val userVOS: MutableList<UserVO> = ArrayList()
-        users.forEach(Consumer { user: User ->
-            val userVO = UserVO()
-            userVO.id = user.id
-            userVO.firstName = user.firstName
-            userVO.email = user.email
-            userVO.password = user.password
-            userVO.roles = user.roles
-            userVO.enabled = user.enabled
-            userVO.createdBy = user.createdBy
-            userVO.lastModifiedBy = user.modifiedBy
-            userVOS.add(userVO)
-        })
-        return userVOS
-    }
 
     @Throws(UserException::class)
     override fun addNewUser(user: User?) {
@@ -59,21 +40,6 @@ class UserServiceImpl(private val userDAO: UserDAO): UserService {
         } catch (e1: Exception) {
             e1.printStackTrace()
         }
-    }
-
-    private fun convertToUser(userVO: UserVO?): User {
-        val user = User()
-        if (userVO != null) {
-            user.firstName = userVO.firstName
-            user.lastName = userVO.lastName
-            user.email = userVO.email
-            user.password = userVO.password
-            user.roles = userVO.roles
-            user.enabled = userVO.enabled
-            user.createdBy = userVO.createdBy
-            user.modifiedBy = userVO.lastModifiedBy
-        }
-        return user
     }
 
     @Throws(UserException::class)

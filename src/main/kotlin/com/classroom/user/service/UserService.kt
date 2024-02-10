@@ -1,7 +1,6 @@
 package com.classroom.user.service
 
 import com.classroom.user.dao.impl.entities.User
-import com.classroom.user.domain.UserVO
 import com.classroom.user.exception.UserException
 
 interface UserService {

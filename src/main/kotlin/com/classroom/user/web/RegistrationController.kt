@@ -1,7 +1,6 @@
 package com.classroom.user.web
 
 import com.classroom.user.dao.impl.entities.User
-import com.classroom.user.domain.UserVO
 import com.classroom.user.service.UserService
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
