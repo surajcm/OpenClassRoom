@@ -1,5 +1,6 @@
 package com.classroom.user.web
 
+import com.classroom.user.dao.impl.entities.User
 import com.classroom.user.service.impl.UserServiceImpl
 import jakarta.servlet.http.HttpServletRequest
 import org.apache.commons.logging.LogFactory
@@ -7,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
 
 
 @Controller
@@ -57,8 +59,16 @@ class UserController(
     }
 
     @GetMapping("/users/new")
-    fun newUser(): String {
+    fun newUser(model: Model): String {
         log.info("received incoming traffic and redirected to new user")
+        model.addAttribute("user", User())
         return "user/user_form"
+    }
+
+    @PostMapping("/users/save")
+    fun saveUser(user: User): String {
+        log.info("received incoming traffic and redirected to save user")
+        userService.save(user)
+        return "redirect:/users"
     }
 }
