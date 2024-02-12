@@ -1,6 +1,7 @@
 package com.classroom.user.service.impl
 
 import com.classroom.user.dao.UserDAO
+import com.classroom.user.dao.impl.entities.Role
 import com.classroom.user.dao.impl.entities.User
 import com.classroom.user.exception.UserException
 import com.classroom.user.service.UserService
@@ -69,19 +70,23 @@ class UserServiceImpl(private val userDAO: UserDAO): UserService {
     }
 
     override fun save(user: User?): User? {
-        var user : User? = null
+        var userSaved : User? = null
         try {
             if (user != null) {
                 user.password = bcryptPasswordEncoder.encode(user.password)
             }
-            user = userDAO.save(user)
+            userSaved = userDAO.save(user)
         } catch (ex: UserException) {
             log.error(message, ex.cause)
             throw UserException(ex.exceptionType!!)
         } catch (e1: Exception) {
             e1.printStackTrace()
         }
-        return user
+        return userSaved
+    }
+
+    override fun listRoles(): List<Role> {
+        return userDAO.listRoles()
     }
 
 }

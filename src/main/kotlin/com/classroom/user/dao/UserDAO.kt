@@ -1,5 +1,6 @@
 package com.classroom.user.dao
 
+import com.classroom.user.dao.impl.entities.Role
 import com.classroom.user.dao.impl.entities.User
 import com.classroom.user.exception.UserException
 
@@ -23,4 +24,6 @@ interface UserDAO {
     fun findByEmail(email: String): User?
 
     fun save(user: User?): User?
+
+    fun listRoles(): List<Role>
 }

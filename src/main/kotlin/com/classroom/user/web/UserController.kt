@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.servlet.mvc.support.RedirectAttributes
 
 
 @Controller
@@ -61,14 +62,18 @@ class UserController(
     @GetMapping("/users/new")
     fun newUser(model: Model): String {
         log.info("received incoming traffic and redirected to new user")
-        model.addAttribute("user", User())
+        val user = User()
+        user.enabled = true
+        model.addAttribute("user", user)
+        model.addAttribute("listRoles", userService.listRoles())
         return "user/user_form"
     }
 
     @PostMapping("/users/save")
-    fun saveUser(user: User): String {
-        log.info("received incoming traffic and redirected to save user")
+    fun saveUser(user: User, redirectAttributes: RedirectAttributes): String {
+        log.info("received incoming traffic and redirected to save user "+ user.toString())
         userService.save(user)
+        redirectAttributes.addFlashAttribute("message", "The user has been saved successfully.")
         return "redirect:/users"
     }
 }

@@ -3,6 +3,7 @@ package com.classroom.user.dao.impl
 import com.classroom.init.specs.SearchCriteria
 import com.classroom.init.specs.SearchOperation
 import com.classroom.user.dao.UserDAO
+import com.classroom.user.dao.impl.entities.Role
 import com.classroom.user.dao.impl.entities.User
 import com.classroom.user.dao.spec.UserSpecification
 import com.classroom.user.exception.UserException
@@ -14,7 +15,7 @@ import org.springframework.util.StringUtils
 
 @Repository
 @SuppressWarnings("unused")
-open class UserDAOImpl(private val userRepository: UserRepository): UserDAO {
+open class UserDAOImpl(private val userRepository: UserRepository, private val roleRepository: RoleRepository): UserDAO {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @Throws(UserException::class)
@@ -128,8 +129,12 @@ open class UserDAOImpl(private val userRepository: UserRepository): UserDAO {
     }
 
     override fun save(user: User?): User? {
+        logger.info(" at save")
         return user?.let { userRepository.save(it) }
     }
 
+    override fun listRoles(): List<Role> {
+        return roleRepository.findAll().toList()
+    }
 
 }

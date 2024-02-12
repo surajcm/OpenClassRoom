@@ -61,4 +61,10 @@ class User {
         }
         modifiedOn = OffsetDateTime.now(ZoneId.systemDefault())
     }
+
+    override fun toString(): String {
+        return "User(id=$id, firstName=$firstName, lastName=$lastName, email=$email, password=$password," +
+                " photo=$photo, enabled=$enabled, createdOn=$createdOn, modifiedOn=$modifiedOn, " +
+                "createdBy=$createdBy, modifiedBy=$modifiedBy, roles=$roles)"
+    }
 }
