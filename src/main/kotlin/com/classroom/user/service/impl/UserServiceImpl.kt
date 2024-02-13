@@ -69,12 +69,10 @@ class UserServiceImpl(private val userDAO: UserDAO): UserService {
         return userList
     }
 
-    override fun save(user: User?): User? {
+    override fun save(user: User): User? {
         var userSaved : User? = null
         try {
-            if (user != null) {
-                user.password = bcryptPasswordEncoder.encode(user.password)
-            }
+            user.password = bcryptPasswordEncoder.encode(user.password)
             userSaved = userDAO.save(user)
         } catch (ex: UserException) {
             log.error(message, ex.cause)
@@ -87,6 +85,10 @@ class UserServiceImpl(private val userDAO: UserDAO): UserService {
 
     override fun listRoles(): List<Role> {
         return userDAO.listRoles()
+    }
+
+    override fun isEmailUnique(email : String): Boolean {
+        return userDAO.findByEmail(email) == null
     }
 
 }

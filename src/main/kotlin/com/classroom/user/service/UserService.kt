@@ -18,7 +18,9 @@ interface UserService {
     @Throws(UserException::class)
     fun searchUserDetails(searchUser: User?, startsWith: Boolean , includes: Boolean): List<User?>?
 
-    fun save(user: User?): User?
+    fun save(user: User): User?
 
     fun listRoles(): List<Role>
+
+    fun isEmailUnique(email : String): Boolean
 }

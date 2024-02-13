@@ -27,3 +27,5 @@ create table users_roles(
     role_id bigint
 );
 
+alter table member add constraint email_unique unique(email);
+

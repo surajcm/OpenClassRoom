@@ -18,7 +18,7 @@ class RegistrationController(private val userService: UserService) {
     }
 
     @PostMapping
-    fun registerUserAccount(@ModelAttribute("user") user: User?): String {
+    fun registerUserAccount(@ModelAttribute("user") user: User): String {
         userService.save(user)
         return "redirect:/registration?success"
     }
