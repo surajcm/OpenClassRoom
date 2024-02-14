@@ -1,20 +1,21 @@
 package com.classroom.user.web
 
 import com.classroom.user.dao.impl.entities.User
-import com.classroom.user.service.impl.UserServiceImpl
+import com.classroom.user.service.UserService
 import jakarta.servlet.http.HttpServletRequest
 import org.apache.commons.logging.LogFactory
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
 
 
 @Controller
 class UserController(
-    private val userService: UserServiceImpl
+    private val userService: UserService
 ) {
     /**
      * logger for user controller.
@@ -75,5 +76,13 @@ class UserController(
         userService.save(user)
         redirectAttributes.addFlashAttribute("message", "The user has been saved successfully.")
         return "redirect:/users"
+    }
+
+    @GetMapping("/users/edit/{id}")
+    fun editUser(@PathVariable id: Long, model: Model, redirectAttributes: RedirectAttributes): String {
+        log.info("received incoming traffic and redirected to edit user")
+        model.addAttribute("user", userService.getUserById(id))
+        model.addAttribute("listRoles", userService.listRoles())
+        return "user/user_form"
     }
 }

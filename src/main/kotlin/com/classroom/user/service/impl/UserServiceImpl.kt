@@ -91,4 +91,8 @@ class UserServiceImpl(private val userDAO: UserDAO): UserService {
         return userDAO.findByEmail(email) == null
     }
 
+    override fun getUserById(id: Long): User? {
+        return userDAO.findById(id)
+    }
+
 }

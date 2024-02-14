@@ -8,6 +8,7 @@ import com.classroom.user.dao.impl.entities.User
 import com.classroom.user.dao.spec.UserSpecification
 import com.classroom.user.exception.UserException
 import com.classroom.user.exception.UserExceptionType.DATABASE_ERROR
+import com.classroom.user.exception.UserNotFoundException
 import org.slf4j.LoggerFactory
 import org.springframework.dao.DataAccessException
 import org.springframework.stereotype.Repository
@@ -135,6 +136,14 @@ open class UserDAOImpl(private val userRepository: UserRepository, private val r
 
     override fun listRoles(): List<Role> {
         return roleRepository.findAll().toList()
+    }
+
+    override fun findById(id: Long): User? {
+        try {
+            return userRepository.findById(id).get()
+        } catch (ex: NoSuchElementException) {
+            throw UserNotFoundException("User not found with id $id")
+        }
     }
 
 }

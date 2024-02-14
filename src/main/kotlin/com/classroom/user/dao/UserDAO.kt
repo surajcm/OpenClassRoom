@@ -26,4 +26,6 @@ interface UserDAO {
     fun save(user: User?): User?
 
     fun listRoles(): List<Role>
+
+    fun findById(id: Long): User?
 }

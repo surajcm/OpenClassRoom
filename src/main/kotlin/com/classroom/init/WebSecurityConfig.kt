@@ -1,11 +1,7 @@
 package com.classroom.init
 
-import com.classroom.user.service.impl.UserDetailsServiceImpl
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -19,8 +15,6 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 open class WebSecurityConfig {
-    @Autowired
-    private val userDetailsService: UserDetailsServiceImpl? = null
 
     @Bean
     open fun bcryptPasswordEncoder(): PasswordEncoder? {
@@ -37,7 +31,10 @@ open class WebSecurityConfig {
             }
         }
         http.authorizeHttpRequests { auth -> auth.anyRequest().authenticated() }
-        http.formLogin { formLogin -> formLogin.loginPage("/login").permitAll() }
+        http.formLogin {
+            formLogin -> formLogin.loginPage("/login").permitAll()
+            formLogin.defaultSuccessUrl("/", true)
+        }
         return http.build()
     }
 
@@ -47,20 +44,9 @@ open class WebSecurityConfig {
             "/css/**",
             "/js/**",
             "/img/**",
+            "/assets/**",
             "/registration"
         )
     }
 
-    @Bean
-    @Throws(Exception::class)
-    open fun authManager(
-        http: HttpSecurity,
-        bCryptPasswordEncoder: BCryptPasswordEncoder?
-    ): AuthenticationManager? {
-        return http.getSharedObject(AuthenticationManagerBuilder::class.java)
-            .userDetailsService(userDetailsService)
-            .passwordEncoder(bCryptPasswordEncoder)
-            .and()
-            .build()
-    }
 }
