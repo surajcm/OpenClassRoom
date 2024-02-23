@@ -67,6 +67,7 @@ class UserController(
         user.enabled = true
         model.addAttribute("user", user)
         model.addAttribute("listRoles", userService.listRoles())
+        model.addAttribute("pageTitle", "Create New User");
         return "user/user_form"
     }
 
@@ -81,8 +82,14 @@ class UserController(
     @GetMapping("/users/edit/{id}")
     fun editUser(@PathVariable id: Long, model: Model, redirectAttributes: RedirectAttributes): String {
         log.info("received incoming traffic and redirected to edit user")
-        model.addAttribute("user", userService.getUserById(id))
-        model.addAttribute("listRoles", userService.listRoles())
-        return "user/user_form"
+        try {
+            model.addAttribute("user", userService.getUserById(id))
+            model.addAttribute("listRoles", userService.listRoles())
+            model.addAttribute("pageTitle", "Edit User (ID: $id)");
+            return "user/user_form"
+        } catch (e: Exception) {
+            redirectAttributes.addFlashAttribute("message", e.message)
+            return "redirect:/users"
+        }
     }
 }

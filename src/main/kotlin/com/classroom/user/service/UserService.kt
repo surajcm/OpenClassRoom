@@ -22,7 +22,7 @@ interface UserService {
 
     fun listRoles(): List<Role>
 
-    fun isEmailUnique(email : String): Boolean
+    fun isEmailUnique(id:Long, email : String): Boolean
 
     fun getUserById(id: Long): User?
 }

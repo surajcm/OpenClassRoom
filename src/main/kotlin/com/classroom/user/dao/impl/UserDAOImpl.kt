@@ -139,11 +139,7 @@ open class UserDAOImpl(private val userRepository: UserRepository, private val r
     }
 
     override fun findById(id: Long): User? {
-        try {
-            return userRepository.findById(id).get()
-        } catch (ex: NoSuchElementException) {
-            throw UserNotFoundException("User not found with id $id")
-        }
+        return userRepository.findById(id).orElseThrow { UserNotFoundException("User not found with id $id") }
     }
 
 }
