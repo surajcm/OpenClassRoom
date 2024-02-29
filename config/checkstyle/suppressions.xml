@@ -18,6 +18,5 @@ WHAT AND WHY CHECKS SUPPRESSED
 <suppressions>
     <suppress files="WebSecurityConfig.java" checks="MethodLength"/>
     <suppress files="UserDAOImpl.java" checks="MethodLength"/>
-    <suppress files="SecurityServiceImpl.java" checks="IllegalCatch"/>
     <suppress files="UserServiceImpl.java" checks="IllegalCatch"/>
 </suppressions>

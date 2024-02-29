@@ -92,4 +92,16 @@ class UserController(
             return "redirect:/users"
         }
     }
+
+    @GetMapping("/users/delete/{id}")
+    fun deleteUser(@PathVariable id: Long, redirectAttributes: RedirectAttributes): String {
+        log.info("received incoming traffic and redirected to delete user")
+        try {
+            userService.delete(id)
+            redirectAttributes.addFlashAttribute("message", "The user ID " + id + " has been deleted successfully.")
+        } catch (e: Exception) {
+            redirectAttributes.addFlashAttribute("message", e.message)
+        }
+        return "redirect:/users"
+    }
 }

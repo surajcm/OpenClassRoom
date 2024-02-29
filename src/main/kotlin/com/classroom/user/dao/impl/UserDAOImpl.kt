@@ -95,16 +95,6 @@ open class UserDAOImpl(private val userRepository: UserRepository, private val r
         }
     }
 
-
-    /**
-     * delete user.
-     *
-     * @param id id
-     */
-    override fun deleteUser(id: Long) {
-        userRepository.deleteById(id)
-    }
-
     /**
      * search for a list of users.
      *
@@ -140,6 +130,10 @@ open class UserDAOImpl(private val userRepository: UserRepository, private val r
 
     override fun findById(id: Long): User? {
         return userRepository.findById(id).orElseThrow { UserNotFoundException("User not found with id $id") }
+    }
+
+    override fun delete(id: Long) {
+        userRepository.deleteById(id)
     }
 
 }

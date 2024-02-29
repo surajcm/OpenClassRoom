@@ -13,9 +13,6 @@ interface UserService {
     fun addNewUser(user: User?)
 
     @Throws(UserException::class)
-    fun deleteUser(id: Long?)
-
-    @Throws(UserException::class)
     fun searchUserDetails(searchUser: User?, startsWith: Boolean , includes: Boolean): List<User?>?
 
     fun save(user: User): User?
@@ -25,4 +22,6 @@ interface UserService {
     fun isEmailUnique(id:Long, email : String): Boolean
 
     fun getUserById(id: Long): User?
+
+    fun delete(id: Long)
 }

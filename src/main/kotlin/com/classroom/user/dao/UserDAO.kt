@@ -16,9 +16,6 @@ interface UserDAO {
     fun updateUser(user: User)
 
     @Throws(UserException::class)
-    fun deleteUser(id: Long)
-
-    @Throws(UserException::class)
     fun searchUserDetails(searchUser: User, startsWith: Boolean , includes: Boolean): List<User?>?
 
     fun findByEmail(email: String): User?
@@ -28,4 +25,6 @@ interface UserDAO {
     fun listRoles(): List<Role>
 
     fun findById(id: Long): User?
+
+    fun delete(id: Long)
 }

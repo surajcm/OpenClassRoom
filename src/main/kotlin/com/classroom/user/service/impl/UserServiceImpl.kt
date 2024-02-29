@@ -6,7 +6,6 @@ import com.classroom.user.dao.impl.entities.User
 import com.classroom.user.exception.UserException
 import com.classroom.user.service.UserService
 import org.apache.commons.logging.LogFactory
-import org.springframework.data.jpa.domain.AbstractPersistable_
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -37,18 +36,6 @@ class UserServiceImpl(private val userDAO: UserDAO): UserService {
     override fun addNewUser(user: User?) {
         try {
             userDAO.addNewUser(user!!)
-        } catch (ex: UserException) {
-            log.error(message, ex.cause)
-            throw UserException(ex.exceptionType!!)
-        } catch (e1: Exception) {
-            e1.printStackTrace()
-        }
-    }
-
-    @Throws(UserException::class)
-    override fun deleteUser(id: Long?) {
-        try {
-            userDAO.deleteUser(id!!)
         } catch (ex: UserException) {
             log.error(message, ex.cause)
             throw UserException(ex.exceptionType!!)
@@ -101,6 +88,10 @@ class UserServiceImpl(private val userDAO: UserDAO): UserService {
 
     override fun getUserById(id: Long): User? {
         return userDAO.findById(id)
+    }
+
+    override fun delete(id: Long) {
+        userDAO.delete(id)
     }
 
 }
