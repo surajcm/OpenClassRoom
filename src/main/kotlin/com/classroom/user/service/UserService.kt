@@ -15,13 +15,15 @@ interface UserService {
     @Throws(UserException::class)
     fun searchUserDetails(searchUser: User?, startsWith: Boolean , includes: Boolean): List<User?>?
 
-    fun save(user: User): User?
+    fun save(user: User): User
 
     fun listRoles(): List<Role>
 
-    fun isEmailUnique(id:Long, email : String): Boolean
+    fun isEmailUnique(id:Long?, email : String): Boolean
 
     fun getUserById(id: Long): User?
 
     fun delete(id: Long)
+
+    fun updateUserEnabledStatus(id: Long, status: Boolean)
 }

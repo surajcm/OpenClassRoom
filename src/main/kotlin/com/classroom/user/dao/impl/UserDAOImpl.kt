@@ -119,9 +119,9 @@ open class UserDAOImpl(private val userRepository: UserRepository, private val r
         return user
     }
 
-    override fun save(user: User?): User? {
+    override fun save(user: User): User {
         logger.info(" at save")
-        return user?.let { userRepository.save(it) }
+        return user.let { userRepository.save(it) }
     }
 
     override fun listRoles(): List<Role> {
@@ -134,6 +134,10 @@ open class UserDAOImpl(private val userRepository: UserRepository, private val r
 
     override fun delete(id: Long) {
         userRepository.deleteById(id)
+    }
+
+    override fun updateUserEnabledStatus(id: Long, status: Boolean) {
+        userRepository.updateEnabledStatus(id, status)
     }
 
 }

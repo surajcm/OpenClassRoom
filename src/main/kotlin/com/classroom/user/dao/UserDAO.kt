@@ -20,11 +20,13 @@ interface UserDAO {
 
     fun findByEmail(email: String): User?
 
-    fun save(user: User?): User?
+    fun save(user: User): User
 
     fun listRoles(): List<Role>
 
     fun findById(id: Long): User?
 
     fun delete(id: Long)
+
+    fun updateUserEnabledStatus(id: Long, status: Boolean)
 }

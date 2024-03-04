@@ -8,27 +8,30 @@
     <div th:fragment="navbar" >
         <nav class="navbar navbar-default navbar-expand-lg navbar-inverse">
             <div class="container-fluid">
-                <a class="navbar-brand" href="/welcome">OpenClassRoom</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#demo-navbar" aria-controls="demo-navbar" aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand" href="/welcome">
+                    <img src="/assets/favicon.png" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+                    OpenClassRoom
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#demo-navbar" aria-controls="demo-navbar" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="demo-navbar">
-                    <ul class="navbar-nav mr-auto">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item"><a class="nav-link" href="/users">Users</a></li>
                         <li class="nav-item"><a class="nav-link" href="/plans">Plans</a></li>
                         <li class="nav-item"><a class="nav-link" href="/faq">FAQ</a></li>
                     </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li class="dropdown">
-                            <div th:if="${not #sets.isEmpty(#authentication.getPrincipal().getAuthorities())}">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome, [[${#authentication.getPrincipal().getUsername()}]]</a>
-                            <ul class="dropdown-menu">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item dropdown">
+                            <a class='nav-link dropdown-toggle' href='#' id='dropdownMenu1' role="button" data-bs-toggle='dropdown' aria-expanded='false'>
+                                <span class="ml-auto mr-3 order-lg-last" th:text="${#authentication.getPrincipal().getUsername()}"></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenu1">
                                 <li><a class="dropdown-item" href="/user/preferences"><i class="icon-cog"></i> Preferences</a></li>
                                 <li><a class="dropdown-item" href="/help/support"><i class="icon-envelope"></i> Contact Support</a></li>
                                 <li class="divider"></li>
                                 <li><a class="dropdown-item" href="#" onclick="logMeOut();"><i class="icon-off"></i> Logout</a></li>
                             </ul>
-                            </div>
                         </li>
                     </ul>
                 </div>

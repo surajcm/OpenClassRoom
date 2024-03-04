@@ -44,6 +44,7 @@ open class WebSecurityConfig {
             "/css/**",
             "/js/**",
             "/img/**",
+            "/user-photos/**",
             "/assets/**",
             "/registration"
         )

@@ -5,13 +5,15 @@ import com.classroom.user.dao.impl.entities.Role
 import com.classroom.user.dao.impl.entities.User
 import com.classroom.user.exception.UserException
 import com.classroom.user.service.UserService
+import jakarta.transaction.Transactional
 import org.apache.commons.logging.LogFactory
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 
 
 @Service
-class UserServiceImpl(private val userDAO: UserDAO): UserService {
+@Transactional
+open class UserServiceImpl(private val userDAO: UserDAO): UserService {
     private val message = "Exception type in service impl: {} "
     private val bcryptPasswordEncoder: BCryptPasswordEncoder = BCryptPasswordEncoder()
 
@@ -58,7 +60,7 @@ class UserServiceImpl(private val userDAO: UserDAO): UserService {
         return userList
     }
 
-    override fun save(user: User): User? {
+    override fun save(user: User): User {
         if (user.id != null) {
             val existingUser = userDAO.findById(user.id!!)
             if (user.password?.isEmpty() != true) {
@@ -76,12 +78,12 @@ class UserServiceImpl(private val userDAO: UserDAO): UserService {
         return userDAO.listRoles()
     }
 
-    override fun isEmailUnique(id: Long, email: String): Boolean {
+    override fun isEmailUnique(id: Long?, email: String): Boolean {
         val userByEmail = userDAO.findByEmail(email) ?: return true
         return if (isCreatingNew(id)) userByEmail == null else userByEmail.id == id
     }
 
-    private fun isCreatingNew(id: Long): Boolean {
+    private fun isCreatingNew(id: Long?): Boolean {
         return id == null
     }
 
@@ -92,6 +94,10 @@ class UserServiceImpl(private val userDAO: UserDAO): UserService {
 
     override fun delete(id: Long) {
         userDAO.delete(id)
+    }
+
+    override fun updateUserEnabledStatus(id: Long, status: Boolean) {
+        userDAO.updateUserEnabledStatus(id, status)
     }
 
 }

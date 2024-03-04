@@ -1,19 +1,19 @@
 
 
-insert into member (id, first_name, last_name, email, password, photo, enabled, createdOn, modifiedOn, createdBy, modifiedBy) values
-(1, 'admin', 'admin', 'admin@admin.com', '$2a$10$swK6dfjfSwe9Ql0twZnvCecSYCu2v4Sp659pVg2DdIoWtoDcr/xMq', 'ADMIN', true,
+insert into member (id, first_name, last_name, email, password, enabled, createdOn, modifiedOn, createdBy, modifiedBy) values
+(1, 'admin', 'admin', 'admin@admin.com', '$2a$10$swK6dfjfSwe9Ql0twZnvCecSYCu2v4Sp659pVg2DdIoWtoDcr/xMq', true,
 '2012-06-02 00:00:00','2012-06-02 00:00:00','admin','admin');
 
-insert into member (id, first_name, last_name, email, password, photo, enabled, createdOn, modifiedOn, createdBy, modifiedBy) values
-    (2, 'guest','guest', 'guest@guest.com', '$2a$10$mYqHoY9ku7MfbKBzrLBkT.NOwbFkXlYDDdns6XwFY0nRA1EdJPWTi',  'QC01', true,
+insert into member (id, first_name, last_name, email, password, enabled, createdOn, modifiedOn, createdBy, modifiedBy) values
+    (2, 'guest','guest', 'guest@guest.com', '$2a$10$mYqHoY9ku7MfbKBzrLBkT.NOwbFkXlYDDdns6XwFY0nRA1EdJPWTi', true,
      '2019-10-15 00:00:00','2019-10-15 00:00:00','admin','admin');
 
-insert into member (id, first_name, last_name, email, password, photo, enabled, createdOn, modifiedOn, createdBy, modifiedBy) values
-    (3, 'manager1','manager1', 'manager@manager.com', '$2a$10$sOirKTjm2JSRLlkOTik6FeGnXJJG1PH5UtQtYUfHccRo0xB086YiC',  'WE01', true,
+insert into member (id, first_name, last_name, email, password, enabled, createdOn, modifiedOn, createdBy, modifiedBy) values
+    (3, 'manager1','manager1', 'manager@manager.com', '$2a$10$sOirKTjm2JSRLlkOTik6FeGnXJJG1PH5UtQtYUfHccRo0xB086YiC', true,
      '2019-10-15 00:00:00','2019-10-15 00:00:00','admin','admin');
 
-insert into member (id, first_name, last_name, email, password, photo, enabled, createdOn, modifiedOn, createdBy, modifiedBy) values
-    (4, 'manager2','manager2', 'manager.2@manager.com', '$2a$10$f6GSOdoeKUsVobCrb4dVn.RqWNXps.fQOyE5IWxHFld5nsxwQjnhS',  'WE01', true,
+insert into member (id, first_name, last_name, email, password, enabled, createdOn, modifiedOn, createdBy, modifiedBy) values
+    (4, 'manager2','manager2', 'manager.2@manager.com', '$2a$10$f6GSOdoeKUsVobCrb4dVn.RqWNXps.fQOyE5IWxHFld5nsxwQjnhS', true,
      '2019-10-15 00:00:00','2019-10-15 00:00:00','admin','admin');
 
 insert into roles (id, name, description, createdOn, modifiedOn, createdBy, modifiedBy) values

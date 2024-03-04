@@ -1,5 +1,6 @@
 package com.classroom.user.web
 
+import com.classroom.init.FileUploadUtil
 import com.classroom.user.dao.impl.entities.User
 import com.classroom.user.service.UserService
 import jakarta.servlet.http.HttpServletRequest
@@ -7,9 +8,12 @@ import org.apache.commons.logging.LogFactory
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
+import org.springframework.util.StringUtils
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
 
 
@@ -72,9 +76,20 @@ class UserController(
     }
 
     @PostMapping("/users/save")
-    fun saveUser(user: User, redirectAttributes: RedirectAttributes): String {
+    fun saveUser(user: User, redirectAttributes: RedirectAttributes,
+                 @RequestParam("image") multipartFile: MultipartFile): String {
         log.info("received incoming traffic and redirected to save user "+ user.toString())
-        userService.save(user)
+        if (!multipartFile.isEmpty) {
+            val fileName = StringUtils.cleanPath(multipartFile.originalFilename!!)
+            user.photo = fileName
+            val savedUser = userService.save(user)
+            val uploadDir = "user-photos/" + savedUser.id
+            FileUploadUtil().cleanDir(uploadDir)
+            FileUploadUtil().saveFile(uploadDir, fileName, multipartFile)
+        } else {
+            if (user.photo?.isEmpty() == true) user.photo = null
+            userService.save(user)
+        }
         redirectAttributes.addFlashAttribute("message", "The user has been saved successfully.")
         return "redirect:/users"
     }
@@ -102,6 +117,15 @@ class UserController(
         } catch (e: Exception) {
             redirectAttributes.addFlashAttribute("message", e.message)
         }
+        return "redirect:/users"
+    }
+
+    @GetMapping("/users/{id}/enabled/{status}")
+    fun updateUserEnabledStatus(@PathVariable id: Long, @PathVariable status: Boolean, redirectAttributes: RedirectAttributes): String {
+        log.info("received incoming traffic and redirected to update user enabled status")
+        userService.updateUserEnabledStatus(id, status)
+        val statusMessage = if (status) "enabled" else "disabled"
+        redirectAttributes.addFlashAttribute("message", "The user ID " + id + " has been " + statusMessage + " successfully.")
         return "redirect:/users"
     }
 }

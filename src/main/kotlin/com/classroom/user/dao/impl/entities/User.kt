@@ -67,4 +67,10 @@ class User {
                 " photo=$photo, enabled=$enabled, createdOn=$createdOn, modifiedOn=$modifiedOn, " +
                 "createdBy=$createdBy, modifiedBy=$modifiedBy, roles=$roles)"
     }
+
+    @Transient
+    fun photosImagePath(): String? {
+        if ((id == null).or(photo == null)) return "/img/default-user.png"
+        return "/user-photos/$id/$photo"
+    }
 }

@@ -11,7 +11,7 @@ class UserRestController(private val userService: UserService) {
     private val log = LogFactory.getLog(javaClass)
 
     @PostMapping("/users/check_email")
-    fun checkDuplicateEmail(@Param("userId") userId: Long, @Param("email") email: String): String {
+    fun checkDuplicateEmail(@Param("userId") userId: Long?, @Param("email") email: String): String {
         log.info("received incoming traffic to check email duplication, email: $email")
         return if (userService.isEmailUnique(userId,email)) "OK" else "Duplicated"
     }
