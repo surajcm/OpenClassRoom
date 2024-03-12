@@ -3,11 +3,11 @@ package com.classroom.user.service
 import com.classroom.user.dao.impl.entities.Role
 import com.classroom.user.dao.impl.entities.User
 import com.classroom.user.exception.UserException
+import org.springframework.data.domain.Page
 
 interface UserService {
 
-    @Throws(UserException::class)
-    fun getAllUserDetails(): List<User>?
+    fun getAllUserDetails(pageNumber: Int): Page<User>
 
     @Throws(UserException::class)
     fun addNewUser(user: User?)

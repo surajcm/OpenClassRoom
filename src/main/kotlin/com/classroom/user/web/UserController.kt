@@ -1,5 +1,6 @@
 package com.classroom.user.web
 
+import com.classroom.init.Constants
 import com.classroom.init.FileUploadUtil
 import com.classroom.user.dao.impl.entities.User
 import com.classroom.user.service.UserService
@@ -9,10 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.util.StringUtils
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
 
@@ -59,10 +57,28 @@ class UserController(
 
     @GetMapping("/users")
     fun listAll(model: Model): String {
-        log.info("received incoming traffic and redirected to users")
-        model.addAttribute("users", userService.getAllUserDetails())
+        return listByPage(1, model);
+    }
+
+    @RequestMapping("/user/page/{pageNumber}")
+    fun listByPage(@PathVariable(name = "pageNumber") pageNumber: Int,
+        model: Model
+    ): String {
+        val page = userService.getAllUserDetails(pageNumber)
+        val startCount = (pageNumber - 1) * Constants.USERS_PER_PAGE+ 1
+        var endCount: Long = startCount.toLong() + Constants.USERS_PER_PAGE - 1
+        if (endCount > page.totalElements) {
+            endCount = page.totalElements
+        }
+        model.addAttribute("currentPage", pageNumber)
+        model.addAttribute("totalPages", page.totalPages)
+        model.addAttribute("startCount", startCount)
+        model.addAttribute("endCount", endCount)
+        model.addAttribute("totalItems", page.totalElements)
+        model.addAttribute("users", page.content)
         return "user/users"
     }
+
 
     @GetMapping("/users/new")
     fun newUser(model: Model): String {

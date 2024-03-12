@@ -1,5 +1,6 @@
 package com.classroom.user.dao.impl
 
+import com.classroom.init.Constants
 import com.classroom.init.specs.SearchCriteria
 import com.classroom.init.specs.SearchOperation
 import com.classroom.user.dao.UserDAO
@@ -11,22 +12,20 @@ import com.classroom.user.exception.UserExceptionType.DATABASE_ERROR
 import com.classroom.user.exception.UserNotFoundException
 import org.slf4j.LoggerFactory
 import org.springframework.dao.DataAccessException
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Repository
 import org.springframework.util.StringUtils
 
 @Repository
 @SuppressWarnings("unused")
 open class UserDAOImpl(private val userRepository: UserRepository, private val roleRepository: RoleRepository): UserDAO {
+
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    @Throws(UserException::class)
-    override fun getAllUserDetails(): List<User> {
-        val userList: List<User> = try {
-            userRepository.findAll()
-        } catch (ex: DataAccessException) {
-            throw UserException(DATABASE_ERROR)
-        }
-        return userList
+    override fun getAllUserDetails(pageNumber: Int): Page<User> {
+        val pageable = PageRequest.of(pageNumber - 1, Constants.USERS_PER_PAGE);
+        return userRepository.findAll(pageable)
     }
 
     @Throws(UserException::class)
@@ -84,7 +83,7 @@ open class UserDAOImpl(private val userRepository: UserRepository, private val r
      */
     override fun updateUser(user: User) {
         if (user.id != null) {
-            val updatedUser :User =  userRepository.getReferenceById(user.id!!)
+            val updatedUser :User =  userRepository.findById(user.id!!).get()
             updatedUser.firstName = user.firstName
             updatedUser.lastName = user.lastName
             updatedUser.email = user.email

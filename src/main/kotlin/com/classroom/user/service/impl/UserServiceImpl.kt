@@ -7,6 +7,7 @@ import com.classroom.user.exception.UserException
 import com.classroom.user.service.UserService
 import jakarta.transaction.Transactional
 import org.apache.commons.logging.LogFactory
+import org.springframework.data.domain.Page
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -19,20 +20,9 @@ open class UserServiceImpl(private val userDAO: UserDAO): UserService {
 
     private val log = LogFactory.getLog(javaClass)
 
-    @Throws(UserException::class)
-    override fun getAllUserDetails(): List<User>? {
-        var userList: List<User>? = null
-        try {
-            userList = userDAO.getAllUserDetails()
-        } catch (ex: UserException) {
-            log.error(message, ex.cause)
-            throw UserException(ex.exceptionType!!)
-        } catch (e1: Exception) {
-            e1.printStackTrace()
-        }
-        return userList
+    override fun getAllUserDetails(pageNumber: Int): Page<User> {
+        return userDAO.getAllUserDetails(pageNumber)
     }
-
 
     @Throws(UserException::class)
     override fun addNewUser(user: User?) {

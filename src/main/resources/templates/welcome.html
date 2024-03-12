@@ -18,7 +18,7 @@
     <script type="text/javascript" src="/js/navbar-scripts.js"></script>
 </head>
 <body>
-    <div th:insert="navbar :: navbar"></div>
+    <div th:insert="~{navbar :: navbar}"></div>
     <div th:if="${not #sets.isEmpty(#authentication.getPrincipal().getAuthorities())}">
         <form id="logoutForm" method="POST" action="${logout/}">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
