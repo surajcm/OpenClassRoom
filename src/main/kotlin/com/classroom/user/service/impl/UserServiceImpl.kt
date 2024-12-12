@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service
 
 @Service
 @Transactional
-open class UserServiceImpl(private val userDAO: UserDAO): UserService {
+class UserServiceImpl(val userDAO: UserDAO): UserService {
     private val message = "Exception type in service impl: {} "
     private val bcryptPasswordEncoder: BCryptPasswordEncoder = BCryptPasswordEncoder()
 
@@ -70,7 +70,7 @@ open class UserServiceImpl(private val userDAO: UserDAO): UserService {
 
     override fun isEmailUnique(id: Long?, email: String): Boolean {
         val userByEmail = userDAO.findByEmail(email) ?: return true
-        return if (isCreatingNew(id)) userByEmail == null else userByEmail.id == id
+        return if (isCreatingNew(id)) false else userByEmail.id == id
     }
 
     private fun isCreatingNew(id: Long?): Boolean {
