@@ -10,49 +10,46 @@ import jakarta.persistence.criteria.Root
 import org.springframework.data.jpa.domain.Specification
 import java.util.*
 
-
 class UserSpecification : Specification<User> {
-    val serialVersionUID: Long = 4328743
-
-    private var list: MutableList<SearchCriteria>? = null
-
-    fun UserSpecification() {
-        this.list = ArrayList<SearchCriteria>()
+    companion object {
+        private const val serialVersionUID: Long = 4328743
     }
+
+    private var list: MutableList<SearchCriteria> = ArrayList()
 
     fun add(criteria: SearchCriteria) {
-        list!!.add(criteria)
+        list.add(criteria)
     }
-    override fun toPredicate(root: Root<User>, query: CriteriaQuery<*>, builder: CriteriaBuilder): Predicate? {
-        //Create a new predicate list
+
+    override fun toPredicate(root: Root<User>, query: CriteriaQuery<*>?, builder: CriteriaBuilder): Predicate? {
         val predicates: MutableList<Predicate> = ArrayList()
 
-        //Add criteria to predicates
-        for (criteria in list!!) {
-            if (criteria.getOperation() == SearchOperation.EQUAL) {
-                /*predicates.add(
-                    builder.equal(
-                        root[criteria.getKey()], criteria.getValue()
+        for (criteria in list) {
+            when (criteria.operation) {
+                SearchOperation.EQUAL -> {
+                    predicates.add(builder.equal(root.get<Any>(criteria.key), criteria.value))
+                }
+                SearchOperation.MATCH -> {
+                    predicates.add(
+                        builder.like(
+                            builder.lower(root.get(criteria.key)),
+                            "%" + criteria.value.toString().lowercase(Locale.getDefault()) + "%"
+                        )
                     )
-                )*/
-            } else if (criteria.getOperation() == SearchOperation.MATCH) {
-                predicates.add(
-                    builder.like(
-                        builder.lower(root[criteria.getKey()]),
-                        "%" + criteria.getValue().toString().lowercase(Locale.getDefault()) + "%"
+                }
+                SearchOperation.MATCH_START -> {
+                    predicates.add(
+                        builder.like(
+                            builder.lower(root.get(criteria.key)),
+                            criteria.value.toString().lowercase(Locale.getDefault()) + "%"
+                        )
                     )
-                )
-            } else if (criteria.getOperation() == SearchOperation.MATCH_START) {
-                predicates.add(
-                    builder.like(
-                        builder.lower(root[criteria.getKey()]),
-                        "%" + criteria.getValue().toString().lowercase(Locale.getDefault()) + "%"
-                    )
-                )
+                }
+                else -> {
+                    // Handle other operations if needed
+                }
             }
         }
-
         return builder.and(*predicates.toTypedArray())
     }
-
 }

@@ -14,10 +14,10 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
-open class WebSecurityConfig {
+class WebSecurityConfig {
 
     @Bean
-    open fun bcryptPasswordEncoder(): PasswordEncoder? {
+    fun bcryptPasswordEncoder(): PasswordEncoder? {
         return BCryptPasswordEncoder()
     }
 

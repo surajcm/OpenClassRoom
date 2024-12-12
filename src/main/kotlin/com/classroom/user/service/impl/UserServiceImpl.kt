@@ -30,7 +30,7 @@ open class UserServiceImpl(private val userDAO: UserDAO): UserService {
             userDAO.addNewUser(user!!)
         } catch (ex: UserException) {
             log.error(message, ex.cause)
-            throw UserException(ex.exceptionType!!)
+            throw UserException()
         } catch (e1: Exception) {
             e1.printStackTrace()
         }
@@ -43,7 +43,7 @@ open class UserServiceImpl(private val userDAO: UserDAO): UserService {
             userList = userDAO.searchUserDetails(searchUser!!, startsWith, includes)
         } catch (ex: UserException) {
             log.error(message, ex.cause)
-            throw UserException(ex.exceptionType!!)
+            throw UserException()
         } catch (e1: Exception) {
             e1.printStackTrace()
         }

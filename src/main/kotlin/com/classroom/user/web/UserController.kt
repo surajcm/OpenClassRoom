@@ -5,24 +5,24 @@ import com.classroom.init.FileUploadUtil
 import com.classroom.user.dao.impl.entities.User
 import com.classroom.user.service.UserService
 import jakarta.servlet.http.HttpServletRequest
+import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.util.StringUtils
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
 
 
 @Controller
-class UserController(
-    private val userService: UserService
-) {
-    /**
-     * logger for user controller.
-     */
-    private val log = LogFactory.getLog(javaClass)
+class UserController(val userService: UserService) {
+    val log: Log = LogFactory.getLog(javaClass)
 
     @GetMapping(value = ["/", "/welcome"])
     fun welcome(): String {
@@ -57,12 +57,12 @@ class UserController(
 
     @GetMapping("/users")
     fun listAll(model: Model): String {
-        return listByPage(1, model);
+        return listByPage(1, model)
     }
 
     @RequestMapping("/user/page/{pageNumber}")
     fun listByPage(@PathVariable(name = "pageNumber") pageNumber: Int,
-        model: Model
+                   model: Model
     ): String {
         val page = userService.getAllUserDetails(pageNumber)
         val startCount = (pageNumber - 1) * Constants.USERS_PER_PAGE+ 1
@@ -87,14 +87,14 @@ class UserController(
         user.enabled = true
         model.addAttribute("user", user)
         model.addAttribute("listRoles", userService.listRoles())
-        model.addAttribute("pageTitle", "Create New User");
+        model.addAttribute("pageTitle", "Create New User")
         return "user/user_form"
     }
 
     @PostMapping("/users/save")
     fun saveUser(user: User, redirectAttributes: RedirectAttributes,
                  @RequestParam("image") multipartFile: MultipartFile): String {
-        log.info("received incoming traffic and redirected to save user "+ user.toString())
+        log.info("received incoming traffic and redirected to save user $user")
         if (!multipartFile.isEmpty) {
             val fileName = StringUtils.cleanPath(multipartFile.originalFilename!!)
             user.photo = fileName
@@ -116,7 +116,7 @@ class UserController(
         try {
             model.addAttribute("user", userService.getUserById(id))
             model.addAttribute("listRoles", userService.listRoles())
-            model.addAttribute("pageTitle", "Edit User (ID: $id)");
+            model.addAttribute("pageTitle", "Edit User (ID: $id)")
             return "user/user_form"
         } catch (e: Exception) {
             redirectAttributes.addFlashAttribute("message", e.message)
@@ -129,7 +129,7 @@ class UserController(
         log.info("received incoming traffic and redirected to delete user")
         try {
             userService.delete(id)
-            redirectAttributes.addFlashAttribute("message", "The user ID " + id + " has been deleted successfully.")
+            redirectAttributes.addFlashAttribute("message", "The user ID $id has been deleted successfully.")
         } catch (e: Exception) {
             redirectAttributes.addFlashAttribute("message", e.message)
         }
@@ -141,7 +141,7 @@ class UserController(
         log.info("received incoming traffic and redirected to update user enabled status")
         userService.updateUserEnabledStatus(id, status)
         val statusMessage = if (status) "enabled" else "disabled"
-        redirectAttributes.addFlashAttribute("message", "The user ID " + id + " has been " + statusMessage + " successfully.")
+        redirectAttributes.addFlashAttribute("message", "The user ID $id has been $statusMessage successfully.")
         return "redirect:/users"
     }
 }

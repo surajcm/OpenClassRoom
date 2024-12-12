@@ -6,7 +6,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import java.nio.file.Path
 
 @Configuration
-open class AppMvcConfig: WebMvcConfigurer {
+class AppMvcConfig: WebMvcConfigurer {
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
         val dirName = "user-photos"
         val userPhotosDirName: Path = Path.of(dirName)

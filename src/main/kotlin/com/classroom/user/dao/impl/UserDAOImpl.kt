@@ -8,7 +8,6 @@ import com.classroom.user.dao.impl.entities.Role
 import com.classroom.user.dao.impl.entities.User
 import com.classroom.user.dao.spec.UserSpecification
 import com.classroom.user.exception.UserException
-import com.classroom.user.exception.UserExceptionType.DATABASE_ERROR
 import com.classroom.user.exception.UserNotFoundException
 import org.slf4j.LoggerFactory
 import org.springframework.dao.DataAccessException
@@ -34,7 +33,7 @@ open class UserDAOImpl(private val userRepository: UserRepository, private val r
             userRepository.save(user)
         } catch (ex: DataAccessException) {
             ex.printStackTrace()
-            throw UserException(DATABASE_ERROR)
+            throw UserException()
         }
     }
 
@@ -106,7 +105,7 @@ open class UserDAOImpl(private val userRepository: UserRepository, private val r
         val userList: List<User> = try {
             searchAllUsers(searchUser, startsWith, includes)
         } catch (ex: DataAccessException) {
-            throw UserException(DATABASE_ERROR)
+            throw UserException()
         }
         return userList
     }

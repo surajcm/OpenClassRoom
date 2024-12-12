@@ -15,8 +15,6 @@ interface UserRepository: PagingAndSortingRepository<User, Long>, CrudRepository
 
     fun findByEmail(email: String): User?
 
-    fun countById(id: Long): Long
-
     @Query("UPDATE User u SET u.enabled = ?2 WHERE u.id = ?1")
     @Modifying
     fun updateEnabledStatus(id: Long, enabled: Boolean)
