@@ -15,7 +15,7 @@ plugins {
     idea
     application
     id("org.springframework.boot") version "3.4.0"
-    id("io.spring.dependency-management") version "1.0.14.RELEASE"
+    id("io.spring.dependency-management") version "1.1.6"
     kotlin("jvm") version "1.7.10"
     kotlin("plugin.spring") version "1.7.10"
     kotlin("plugin.allopen") version "1.6.21"
