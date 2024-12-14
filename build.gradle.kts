@@ -19,7 +19,7 @@ plugins {
     kotlin("jvm") version "2.1.0"
     kotlin("plugin.spring") version "1.7.10"
     kotlin("plugin.allopen") version "1.6.21"
-    kotlin("plugin.jpa") version "1.6.21"
+    kotlin("plugin.jpa") version "1.9.25"
     kotlin("kapt") version "1.6.21"
     id("org.sonarqube") version "4.4.1.3373"
     checkstyle
