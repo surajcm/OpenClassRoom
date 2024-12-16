@@ -10,7 +10,7 @@ dependencies {
     implementation("com.h2database:h2:2.1.214")
     implementation("org.apache.tomcat.embed:tomcat-embed-jasper")
     implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.25")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:2.1.0")
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'junit', module: 'junit'
