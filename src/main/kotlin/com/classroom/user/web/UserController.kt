@@ -21,8 +21,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes
 
 
 @Controller
-class UserController(val userService: UserService) {
-    val log: Log = LogFactory.getLog(javaClass)
+class UserController(private val userService: UserService) {
+    private val log: Log = LogFactory.getLog(javaClass)
 
     @GetMapping(value = ["/", "/welcome"])
     fun welcome(): String {
@@ -61,21 +61,22 @@ class UserController(val userService: UserService) {
     }
 
     @RequestMapping("/user/page/{pageNumber}")
-    fun listByPage(@PathVariable(name = "pageNumber") pageNumber: Int,
-                   model: Model
+    fun listByPage(
+        @PathVariable(name = "pageNumber") pageNumber: Int,
+        model: Model
     ): String {
         val page = userService.getAllUserDetails(pageNumber)
-        val startCount = (pageNumber - 1) * Constants.USERS_PER_PAGE+ 1
-        var endCount: Long = startCount.toLong() + Constants.USERS_PER_PAGE - 1
-        if (endCount > page.totalElements) {
-            endCount = page.totalElements
+        val startCount = (pageNumber - 1) * Constants.USERS_PER_PAGE + 1
+        val endCount = minOf(startCount + Constants.USERS_PER_PAGE - 1L, page.totalElements)
+
+        model.apply {
+            addAttribute("currentPage", pageNumber)
+            addAttribute("totalPages", page.totalPages)
+            addAttribute("startCount", startCount)
+            addAttribute("endCount", endCount)
+            addAttribute("totalItems", page.totalElements)
+            addAttribute("users", page.content)
         }
-        model.addAttribute("currentPage", pageNumber)
-        model.addAttribute("totalPages", page.totalPages)
-        model.addAttribute("startCount", startCount)
-        model.addAttribute("endCount", endCount)
-        model.addAttribute("totalItems", page.totalElements)
-        model.addAttribute("users", page.content)
         return "user/users"
     }
 
@@ -92,45 +93,61 @@ class UserController(val userService: UserService) {
     }
 
     @PostMapping("/users/save")
-    fun saveUser(user: User, redirectAttributes: RedirectAttributes,
-                 @RequestParam("image") multipartFile: MultipartFile): String {
-        log.info("received incoming traffic and redirected to save user $user")
+    fun saveUser(
+        user: User,
+        redirectAttributes: RedirectAttributes,
+        @RequestParam("image") multipartFile: MultipartFile
+    ): String {
+        log.info("Saving user: $user")
+
         if (!multipartFile.isEmpty) {
-            val fileName = StringUtils.cleanPath(multipartFile.originalFilename!!)
-            user.photo = fileName
-            val savedUser = userService.save(user)
-            val uploadDir = "user-photos/" + savedUser.id
-            FileUploadUtil().cleanDir(uploadDir)
-            FileUploadUtil().saveFile(uploadDir, fileName, multipartFile)
+            multipartFile.originalFilename?.let { originalFileName ->
+                val fileName = StringUtils.cleanPath(originalFileName)
+                user.photo = fileName
+                val savedUser = userService.save(user)
+                val uploadDir = "user-photos/${savedUser.id}"
+                FileUploadUtil.cleanDir(uploadDir)
+                FileUploadUtil.saveFile(uploadDir, fileName, multipartFile)
+            }
         } else {
-            if (user.photo?.isEmpty() == true) user.photo = null
+            if (user.photo.isNullOrBlank()) user.photo = null
             userService.save(user)
         }
+
         redirectAttributes.addFlashAttribute("message", "The user has been saved successfully.")
         return "redirect:/users"
     }
 
     @GetMapping("/users/edit/{id}")
-    fun editUser(@PathVariable id: Long, model: Model, redirectAttributes: RedirectAttributes): String {
-        log.info("received incoming traffic and redirected to edit user")
-        try {
-            model.addAttribute("user", userService.getUserById(id))
-            model.addAttribute("listRoles", userService.listRoles())
-            model.addAttribute("pageTitle", "Edit User (ID: $id)")
-            return "user/user_form"
-        } catch (e: Exception) {
+    fun editUser(
+        @PathVariable id: Long,
+        model: Model,
+        redirectAttributes: RedirectAttributes
+    ): String {
+        log.info("Editing user with id: $id")
+        return runCatching {
+            model.apply {
+                addAttribute("user", userService.getUserById(id))
+                addAttribute("listRoles", userService.listRoles())
+                addAttribute("pageTitle", "Edit User (ID: $id)")
+            }
+            "user/user_form"
+        }.getOrElse { e ->
             redirectAttributes.addFlashAttribute("message", e.message)
-            return "redirect:/users"
+            "redirect:/users"
         }
     }
 
     @GetMapping("/users/delete/{id}")
-    fun deleteUser(@PathVariable id: Long, redirectAttributes: RedirectAttributes): String {
-        log.info("received incoming traffic and redirected to delete user")
-        try {
+    fun deleteUser(
+        @PathVariable id: Long,
+        redirectAttributes: RedirectAttributes
+    ): String {
+        log.info("Deleting user with id: $id")
+        runCatching {
             userService.delete(id)
             redirectAttributes.addFlashAttribute("message", "The user ID $id has been deleted successfully.")
-        } catch (e: Exception) {
+        }.onFailure { e ->
             redirectAttributes.addFlashAttribute("message", e.message)
         }
         return "redirect:/users"

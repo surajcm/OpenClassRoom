@@ -8,46 +8,39 @@ import jakarta.persistence.criteria.CriteriaQuery
 import jakarta.persistence.criteria.Predicate
 import jakarta.persistence.criteria.Root
 import org.springframework.data.jpa.domain.Specification
-import java.util.*
 
 class UserSpecification : Specification<User> {
     companion object {
         private const val serialVersionUID: Long = 4328743
     }
 
-    private var list: MutableList<SearchCriteria> = ArrayList()
+    private val criteria = mutableListOf<SearchCriteria>()
 
-    fun add(criteria: SearchCriteria) {
-        list.add(criteria)
+    fun add(searchCriteria: SearchCriteria) {
+        criteria.add(searchCriteria)
     }
 
-    override fun toPredicate(root: Root<User>, query: CriteriaQuery<*>?, builder: CriteriaBuilder): Predicate? {
-        val predicates: MutableList<Predicate> = ArrayList()
+    override fun toPredicate(
+        root: Root<User>,
+        query: CriteriaQuery<*>?,
+        builder: CriteriaBuilder
+    ): Predicate {
+        val predicates = criteria.map { criterion ->
+            when (criterion.operation) {
+                SearchOperation.EQUAL ->
+                    builder.equal(root.get<Any>(criterion.key), criterion.value)
 
-        for (criteria in list) {
-            when (criteria.operation) {
-                SearchOperation.EQUAL -> {
-                    predicates.add(builder.equal(root.get<Any>(criteria.key), criteria.value))
-                }
-                SearchOperation.MATCH -> {
-                    predicates.add(
-                        builder.like(
-                            builder.lower(root.get(criteria.key)),
-                            "%" + criteria.value.toString().lowercase(Locale.getDefault()) + "%"
-                        )
+                SearchOperation.MATCH ->
+                    builder.like(
+                        builder.lower(root.get(criterion.key)),
+                        "%${criterion.value.toString().lowercase()}%"
                     )
-                }
-                SearchOperation.MATCH_START -> {
-                    predicates.add(
-                        builder.like(
-                            builder.lower(root.get(criteria.key)),
-                            criteria.value.toString().lowercase(Locale.getDefault()) + "%"
-                        )
+
+                SearchOperation.MATCH_START ->
+                    builder.like(
+                        builder.lower(root.get(criterion.key)),
+                        "${criterion.value.toString().lowercase()}%"
                     )
-                }
-                else -> {
-                    // Handle other operations if needed
-                }
             }
         }
         return builder.and(*predicates.toTypedArray())

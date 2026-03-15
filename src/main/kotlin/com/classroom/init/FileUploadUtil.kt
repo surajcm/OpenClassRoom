@@ -3,28 +3,37 @@ package com.classroom.init
 import org.springframework.web.multipart.MultipartFile
 import java.io.IOException
 import java.nio.file.Files
-import java.nio.file.Paths
+import java.nio.file.Path
 import kotlin.io.path.deleteIfExists
+import kotlin.io.path.exists
+import kotlin.io.path.isDirectory
 
-class FileUploadUtil {
-    fun saveFile(uploadDir:String, fileName:String, multipartFile: MultipartFile) {
-        val uploadPath = Paths.get(uploadDir)
-        if (!Files.exists(uploadPath)) {
+object FileUploadUtil {
+    fun saveFile(uploadDir: String, fileName: String, multipartFile: MultipartFile) {
+        val uploadPath = Path.of(uploadDir)
+
+        if (!uploadPath.exists()) {
             Files.createDirectories(uploadPath)
         }
-        try {(multipartFile.inputStream.use { inputStream ->
-            val filePath = uploadPath.resolve(fileName)
-            Files.copy(inputStream, filePath)
-        })} catch (e: Exception) {
-            throw IOException("Could not save file: $fileName", e)
+
+        multipartFile.inputStream.use { inputStream ->
+            runCatching {
+                val filePath = uploadPath.resolve(fileName)
+                Files.copy(inputStream, filePath)
+            }.getOrElse { e ->
+                throw IOException("Could not save file: $fileName", e)
+            }
         }
     }
 
     fun cleanDir(dir: String) {
-        try {
-            Files.list(Paths.get(dir)).forEach { file -> if (!Files.isDirectory(file)) file.deleteIfExists() }
-        } catch (e: IOException) {
-            println("Could not list directory: $dir")
+        runCatching {
+            Files.list(Path.of(dir)).use { stream ->
+                stream.filter { !it.isDirectory() }
+                    .forEach { it.deleteIfExists() }
+            }
+        }.onFailure {
+            println("Could not clean directory: $dir")
         }
     }
 }

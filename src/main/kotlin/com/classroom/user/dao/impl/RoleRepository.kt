@@ -1,8 +1,6 @@
 package com.classroom.user.dao.impl
 
 import com.classroom.user.dao.impl.entities.Role
-import org.springframework.data.repository.CrudRepository
-import org.springframework.stereotype.Repository
+import org.springframework.data.jpa.repository.JpaRepository
 
-@Repository
-interface RoleRepository: CrudRepository<Role, Long>
+interface RoleRepository : JpaRepository<Role, Long>

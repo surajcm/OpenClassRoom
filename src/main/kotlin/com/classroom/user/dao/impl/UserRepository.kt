@@ -5,13 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
-import org.springframework.data.repository.CrudRepository
-import org.springframework.data.repository.PagingAndSortingRepository
-import org.springframework.stereotype.Repository
 
-@Repository
-interface UserRepository: PagingAndSortingRepository<User, Long>, CrudRepository<User, Long>,
-    JpaSpecificationExecutor<User> {
+interface UserRepository : JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
 
     fun findByEmail(email: String): User?
 

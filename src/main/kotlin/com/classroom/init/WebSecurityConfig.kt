@@ -17,29 +17,29 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector
 class WebSecurityConfig {
 
     @Bean
-    fun bcryptPasswordEncoder(): PasswordEncoder? {
-        return BCryptPasswordEncoder()
-    }
+    fun bcryptPasswordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 
     @Bean
-    @Throws(Exception::class)
-    open fun filterChain(http: HttpSecurity,introspect: HandlerMappingIntrospector): SecurityFilterChain? {
+    fun filterChain(http: HttpSecurity, introspect: HandlerMappingIntrospector): SecurityFilterChain {
         val mvcMatcherBuilder = MvcRequestMatcher.Builder(introspect)
-        for (paths in getExclusionPaths()) {
-            http.authorizeHttpRequests { auth ->
-                auth.requestMatchers(mvcMatcherBuilder.pattern(paths)).permitAll()
+
+        http.authorizeHttpRequests { auth ->
+            EXCLUSION_PATHS.forEach { path ->
+                auth.requestMatchers(mvcMatcherBuilder.pattern(path)).permitAll()
             }
+            auth.anyRequest().authenticated()
         }
-        http.authorizeHttpRequests { auth -> auth.anyRequest().authenticated() }
-        http.formLogin {
-            formLogin -> formLogin.loginPage("/login").permitAll()
+
+        http.formLogin { formLogin ->
+            formLogin.loginPage("/login").permitAll()
             formLogin.defaultSuccessUrl("/", true)
         }
+
         return http.build()
     }
 
-    private fun getExclusionPaths(): Array<String> {
-        return arrayOf(
+    companion object {
+        private val EXCLUSION_PATHS = arrayOf(
             "/resources/**",
             "/css/**",
             "/js/**",
@@ -49,5 +49,4 @@ class WebSecurityConfig {
             "/registration"
         )
     }
-
 }
