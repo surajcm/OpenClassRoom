@@ -56,7 +56,7 @@ src/test/kotlin/com/classroom/
 
 - [ ] **Step 1: Add MockK and AssertJ dependencies**
 
-Add to `gradle/dependencies.gradle` after line 22:
+Add to the testImplementation section in `gradle/dependencies.gradle`:
 
 ```groovy
 testImplementation("io.mockk:mockk:1.13.8")
