@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:3.4.0")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:3.5.16")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.25")
     }
 }
@@ -14,7 +14,7 @@ plugins {
     java
     idea
     application
-    id("org.springframework.boot") version "3.4.0"
+    id("org.springframework.boot") version "3.5.16"
     id("io.spring.dependency-management") version "1.1.6"
     kotlin("jvm") version "2.1.0"
     kotlin("plugin.spring") version "1.7.10"
