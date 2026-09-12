@@ -6,7 +6,7 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:3.4.0")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.25")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.20")
     }
 }
 
@@ -18,9 +18,9 @@ plugins {
     id("io.spring.dependency-management") version "1.1.6"
     kotlin("jvm") version "2.1.0"
     kotlin("plugin.spring") version "1.7.10"
-    kotlin("plugin.allopen") version "1.6.21"
-    kotlin("plugin.jpa") version "1.6.21"
-    kotlin("kapt") version "1.6.21"
+    kotlin("plugin.allopen") version "2.4.20"
+    kotlin("plugin.jpa") version "2.4.20"
+    kotlin("kapt") version "2.4.20"
     id("org.sonarqube") version "4.4.1.3373"
     checkstyle
 }
